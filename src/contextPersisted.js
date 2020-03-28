@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 export const AppContextPersisted = React.createContext( {
     theme: 'dark',
@@ -7,10 +7,16 @@ export const AppContextPersisted = React.createContext( {
 
 export const AppContextPersistedProvider = ( { children } ) => {
     
-    const [ appStatePersisted, setAppStatePersisted ] = useState( {
-        theme: 'dark',
-        setAppStatePersisted: setAppStatePersisted,
-    } );
+    const [ appStatePersisted, setAppStatePersisted ] = useState( 
+        JSON.parse( localStorage.getItem( 'appLocalstoragePersisted' ) ) || {
+            theme: 'dark',
+            setAppStatePersisted: setAppStatePersisted,
+        } 
+    );
+
+    useEffect( () => {
+        localStorage.setItem( 'appLocalstoragePersisted', JSON.stringify( appStatePersisted ) );
+    }, [ appStatePersisted ] )
 
     const appStateContext = { appStatePersisted, setAppStatePersisted };
 

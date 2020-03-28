@@ -11,23 +11,23 @@ const FormLink = withRouter( ( { history, ...props } ) => {
     const [ linkgroup, setLinkgroup ] = useState( {
         name: '',
         slug: '',
-        uid: '',/* TODO: Check if user is signed in and use their actual user id */
+        uid: '',
     } )
-
+    
     const [ linkgroupCreationStatus, setLinkgroupCreationStatus ] = useState( {
         success: false,
         statusMessage: '',
         errorMessage: '',
     } )
 
-    const [ isSignedIn, setIsSignedIn ] = useState( false )
+    const [ isSignedIn, setIsSignedIn ] = useState( false )// TODO: replace this with nonPersisted context
 
     const [ authFormInitiated, setAuthFormInitiated ] = useState( false )
 
     // Query firebase to check if the slug already exists
     // If it does, tell the user to pick a new slug
     // If it doesn't, create the new collection
-    const createLinkgroupCollection = () => {
+    const createLinkgroupCollection = ( linkgroup ) => {
         db.collection( 'linkgroups' ).where( 'slug', '==', linkgroup.slug )
         .get()
         .then( function( querySnapshot ) {
@@ -79,7 +79,7 @@ const FormLink = withRouter( ( { history, ...props } ) => {
                     uid: user.uid,
                 } )
                 setIsSignedIn( true )
-            } else if ( user && authFormInitiated ) {
+            } else if ( user && authFormInitiated ) {          
                 // User is authenticated because of clicking login button
                 setLinkgroup( {
                     name: linkgroup.name,
@@ -87,7 +87,11 @@ const FormLink = withRouter( ( { history, ...props } ) => {
                     uid: user.uid,
                 } )
                 setIsSignedIn( true )
-                createLinkgroupCollection()
+                createLinkgroupCollection( {
+                    name: linkgroup.name,
+                    slug: linkgroup.slug,
+                    uid: user.uid 
+                } )
             } else if ( !user && authFormInitiated ) {
                 // User is not authenticated yet but login button has been clicked
                 setLinkgroup( {

@@ -1,13 +1,18 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { db } from '../../firebase'
 
+import { AppContextNonPersisted } from '../../contextNonPersisted'
+import { currentUserIsOwner } from '../../shared/utilities'
 import Link from '../link/index'
 
 import './styles.css'
 
-const ListLinks = ( { linkGroupId } ) => {
+const ListLinks = ( { linkGroupId, linkGroupUid } ) => {
+    
     const [ links, setLinks ] = useState( [] )
 
+    const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
+    
     useEffect( () => {
         const unsub = db.collection( 'linkgroups' ).doc( linkGroupId ).collection( 'links' ).onSnapshot( snapshot => {
             const allLinks = snapshot.docs.map( doc => ( {
@@ -33,7 +38,7 @@ const ListLinks = ( { linkGroupId } ) => {
             { links.length ? links.map( link => (
                 <div className="grid__item" key={ 'grid__item-' + link.id }>
                     <div className="card color--card">
-                        <div className="card__delete" onClick={ () => deleteLink( link.id ) }></div>
+                        { currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkGroupUid ) && <div className="card__delete" onClick={ () => deleteLink( link.id ) }></div> }
                         <a className="card__link" href={ link.href } title={ link.title } target="_blank" rel="noopener noreferrer">
                             <div className="card__inner">
                                 <div className="card__favicon"><img src={ 'https://s2.googleusercontent.com/s2/favicons?domain=' + link.href } width="16" height="16" /></div>

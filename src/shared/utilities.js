@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { db } from '../firebase'
 
 export const generateNewUserId = () => {
@@ -31,7 +31,13 @@ export const fireBaseQuery = ( collection, fieldName, fieldValue, stateFunction,
     })
 }
 
-/////////////////////////
+// Only allow certain functions for authenticed group owner
+export const currentUserIsOwner = ( authenticated, uid, groupUid ) => {
+    
+    return authenticated && uid === groupUid;
+}
+
+///////////////////////// OLD STUFF PROBS DELETEs //////////////////////////
 
 export const fireBaseGet1 = ( collectionName, fieldName, condition = '==' ) => {
     db.collection( collectionName ).where( fieldName, condition, true )
