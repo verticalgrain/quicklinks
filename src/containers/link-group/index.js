@@ -1,15 +1,13 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 
-import FormLink from '../../components/form-link/index'
 import ListLinks from '../../components/list-links/index'
+import ModalCreateLink from '../../components/modal-create-link/index'
 
 import { fireBaseQuery } from '../../shared/utilities'
 
 const LinkGroup = ( { match } ) => {
 
     const [ linkGroup, setLinkGroup ] = useState( [] )
-
-    console.log( linkGroup );
 
     useEffect( () => {
         fireBaseQuery( 'linkgroups', 'slug', match.params.groupslug, setLinkGroup );
@@ -20,25 +18,31 @@ const LinkGroup = ( { match } ) => {
     }, [] );
 
     return (
-        <Fragment>
-            { linkGroup.length ?
-                <Fragment>
-                    { match.params.groupslug }
-                    { linkGroup.map( link => (
-                        <div key={ 'linkgroupid-' + link.id }>
-                            { link.id }
-                            { link.slug }
-                            { link.name }
-                            { link.user }
+        <main className="main">
+            <div className="container">
+                <div className="linkgroup">
+                    <div className="linkgroup__col1 color--col1">
+                        <div className="linkgroup__name">
+                            { linkGroup[0] && linkGroup[0].name }
                         </div>
-                    ))}
-                    <FormLink linkGroupId={ linkGroup[ 0 ].id } />
-                    <ListLinks linkGroupId={ linkGroup[ 0 ].id } />
-                </Fragment>
-            :
-                <div>Ooops, the group does not seem to exist.</div>
-            }
-        </Fragment>
+                    </div>
+                    <div className="linkgroup__col2 color--col2">
+                        <div className="linkgroup__links">
+                            <div className="grid">
+                                { linkGroup.length ?
+                                    <Fragment>
+                                        <ListLinks linkGroupId={ linkGroup[ 0 ].id } />
+                                    </Fragment>
+                                :
+                                    <div>Ooops, the group does not seem to exist.</div>
+                                }
+                            </div>
+                        </div>
+                    </div>{/* .linkgroup__col2 */}
+                </div>{/* .linkgroup */}
+                { linkGroup.length && <ModalCreateLink linkGroupUid={ linkGroup[ 0 ].uid } linkGroupId={ linkGroup[ 0 ].id } /> }
+            </div>
+        </main>
     )
 }
 

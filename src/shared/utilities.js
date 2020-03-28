@@ -25,7 +25,6 @@ export const fireBaseQuery = ( collection, fieldName, fieldValue, stateFunction,
             ...doc.data()
         } ) )
         stateFunction( allQueryData );
-        console.log( allQueryData )
     } )
     .catch(function(err) {
         console.log( err );

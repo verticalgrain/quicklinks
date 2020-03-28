@@ -1,27 +1,20 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import CreateLinkGroup from './containers/create-link-group/index'
-import LinkGroup from './containers/link-group/index'
+import Layout from './containers/layout/index'
+import { AppContextPersisted, AppContextPersistedProvider } from './contextPersisted'
+import { AppContextNonPersisted, AppContextNonPersistedProvider } from './contextNonPersisted'
 
 import './styles.css'
 
 const App = () => {
+
     return (
-        <div className='app'>
-            <header></header>
-            <main>
-                <Router>
-                    <Switch>
-                        <Route path='/' exact component={ CreateLinkGroup } />
-                        <Route path='/create' exact component={ CreateLinkGroup } />
-                        <Route path='/:groupslug' component={ LinkGroup } />
-                    </Switch>
-                </Router>
-            </main>
-            <footer></footer>
-        </div>
+        <AppContextNonPersistedProvider>
+            <AppContextPersistedProvider>
+                <Layout />
+            </AppContextPersistedProvider>
+        </AppContextNonPersistedProvider>
     )
 }
 

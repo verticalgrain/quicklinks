@@ -1,15 +1,27 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { db } from '../../firebase'
 
-const FormLink = ( { linkGroupId, linkGroupSlug } ) => {
+const FormLink = ( { linkGroupId, callBack } ) => {
     const [ link, setLink ] = useState( {
         title: '',
         href: '',
     } )
 
+    const textInput = useRef( null );
+
+    useEffect( () => {
+
+        textInput.current.focus();
+
+        return () => {
+
+        }
+    }, [] )
+
     const handleSubmit = e => {
         e.preventDefault();
         db.collection( 'linkgroups' ).doc( linkGroupId ).collection( 'links' ).add( link );
+        callBack && callBack( false )
         setLink( {
             title: '',
             href: '',
@@ -25,7 +37,7 @@ const FormLink = ( { linkGroupId, linkGroupSlug } ) => {
     // Add the link to the sub-collection of the document
 
     return (
-        <form onSubmit={ handleSubmit }>
+        <form className="form form--link" onSubmit={ handleSubmit }>
             <div className='input-field'>
                 <input
                     type='text'
@@ -36,6 +48,7 @@ const FormLink = ( { linkGroupId, linkGroupSlug } ) => {
                     placeholder='Title'
                     className='validate'
                     required
+                    ref={ textInput }
                 />
                 <label htmlFor='title'>
                     Title
@@ -46,7 +59,7 @@ const FormLink = ( { linkGroupId, linkGroupSlug } ) => {
                     type='text'
                     id='href'
                     name='href'
-                    value={ link.href }
+                    value={ link.href ? link.href : 'https://' }
                     onChange={ handleChange }
                     placeholder='Link href'
                     className='validate'
