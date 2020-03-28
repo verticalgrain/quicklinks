@@ -1,8 +1,6 @@
 import React, { Fragment, useContext } from 'react'
 import Settings from '../settings/index'
 
-import { AppContextNonPersisted } from '../../contextNonPersisted'
-
 import './styles.css'
 
 const Sidebar = () => {

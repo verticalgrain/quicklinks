@@ -1,7 +1,8 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useContext, useEffect, useState } from 'react'
 
 import ListLinks from '../../components/list-links/index'
 import ModalCreateLink from '../../components/modal-create-link/index'
+import { AppContextNonPersisted } from '../../contextNonPersisted'
 
 import { fireBaseQuery } from '../../shared/utilities'
 
@@ -9,6 +10,10 @@ const LinkGroup = ( { match } ) => {
 
     const [ linkGroup, setLinkGroup ] = useState( [] )
 
+    const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
+    console.log(appStateNonPersisted);
+    console.log(linkGroup);
+    
     useEffect( () => {
         fireBaseQuery( 'linkgroups', 'slug', match.params.groupslug, setLinkGroup );
 
@@ -17,6 +22,11 @@ const LinkGroup = ( { match } ) => {
         }
     }, [] );
 
+    // Only allow the logged in owner of the group to add new links
+    const showModalCreateLink = linkGroup.length && appStateNonPersisted.authenticated && appStateNonPersisted.uid === linkGroup[ 0 ].uid;
+
+    console.log( showModalCreateLink );
+    
     return (
         <main className="main">
             <div className="container">
@@ -40,7 +50,7 @@ const LinkGroup = ( { match } ) => {
                         </div>
                     </div>{/* .linkgroup__col2 */}
                 </div>{/* .linkgroup */}
-                { linkGroup.length && <ModalCreateLink linkGroupUid={ linkGroup[ 0 ].uid } linkGroupId={ linkGroup[ 0 ].id } /> }
+                { showModalCreateLink && <ModalCreateLink linkGroupUid={ linkGroup[ 0 ].uid } linkGroupId={ linkGroup[ 0 ].id } /> }
             </div>
         </main>
     )

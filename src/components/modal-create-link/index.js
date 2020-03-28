@@ -22,7 +22,7 @@ const ModalCreateLink = ( { linkGroupId, linkGroupUid } ) => {
                 </div>
             </div>
             }
-            { appStateNonPersisted.authenticated && appStateNonPersisted.uid === linkGroupUid && <ButtonCreateLink buttonOnclick={ setModalState } toggleState={ modalState } /> }
+            { appStateNonPersisted.authenticated && <ButtonCreateLink buttonOnclick={ setModalState } toggleState={ modalState } /> }
         </Fragment>
     )
 
