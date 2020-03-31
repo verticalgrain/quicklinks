@@ -4,9 +4,7 @@ import ButtonCreateLink from '../button-create-link/index'
 import { AppContextNonPersisted } from '../../contextNonPersisted'
 import FormLink from '../form-link/index'
 
-const ModalCreateLink = ( { linkGroupId, linkGroupUid } ) => {
-
-    const [ modalState, setModalState ] = useState( false )
+const ModalCreateLink = ( { modalState, setModalState, linkGroupId, linkGroupUid } ) => {
 
     const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
 

@@ -10,8 +10,10 @@ const LinkGroup = ( { match } ) => {
 
     const [ linkGroup, setLinkGroup ] = useState( [] )
 
+    const [ modalState, setModalState ] = useState( false )
+
     const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
-    
+
     useEffect( () => {
         fireBaseQuery( 'linkgroups', 'slug', match.params.groupslug, setLinkGroup );
 
@@ -37,7 +39,7 @@ const LinkGroup = ( { match } ) => {
                             <div className="grid">
                                 { linkGroup.length ?
                                     <Fragment>
-                                        <ListLinks linkGroupId={ linkGroup[ 0 ].id } linkGroupUid={ linkGroup[ 0 ].uid } />
+                                        <ListLinks modalState={ modalState } setModalState={ setModalState } linkGroupId={ linkGroup[ 0 ].id } linkGroupUid={ linkGroup[ 0 ].uid } />
                                     </Fragment>
                                 :
                                     <div>Ooops, the group does not seem to exist.</div>
@@ -46,7 +48,7 @@ const LinkGroup = ( { match } ) => {
                         </div>
                     </div>{/* .linkgroup__col2 */}
                 </div>{/* .linkgroup */}
-                { showModalCreateLink && <ModalCreateLink linkGroupUid={ linkGroup[ 0 ].uid } linkGroupId={ linkGroup[ 0 ].id } /> }
+                { showModalCreateLink && <ModalCreateLink modalState={ modalState } setModalState={ setModalState } linkGroupUid={ linkGroup[ 0 ].uid } linkGroupId={ linkGroup[ 0 ].id } /> }
             </div>
         </main>
     )

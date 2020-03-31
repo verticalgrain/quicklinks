@@ -25,7 +25,7 @@ const Layout = () => {
             unmountOnExit
             onExited={ () => setSidebarOpen( false ) }
             >
-                <Sidebar />
+                <Sidebar sidebarOpen={ sidebarOpen } setSidebarOpen={ setSidebarOpen } />
             </CSSTransition>
             <button className="button button--settings" onClick={ () => setSidebarOpen( ! sidebarOpen ) }>
                 <div className="button__inner"></div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 export const AppContextPersisted = React.createContext( {
     theme: 'dark',
-    setAppStatePersisted: () => {},
+    linkTargetBlank: true,
 } );
 
 export const AppContextPersistedProvider = ( { children } ) => {
@@ -10,7 +10,7 @@ export const AppContextPersistedProvider = ( { children } ) => {
     const [ appStatePersisted, setAppStatePersisted ] = useState( 
         JSON.parse( localStorage.getItem( 'appLocalstoragePersisted' ) ) || {
             theme: 'dark',
-            setAppStatePersisted: setAppStatePersisted,
+            linkTargetBlank: true,
         } 
     );
 
@@ -20,6 +20,8 @@ export const AppContextPersistedProvider = ( { children } ) => {
 
     const appStateContext = { appStatePersisted, setAppStatePersisted };
 
+    console.log( appStatePersisted )
+    
     return (
         <AppContextPersisted.Provider value={ appStateContext }>
             { children }

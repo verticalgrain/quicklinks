@@ -22,6 +22,7 @@ body {
     --color-gray-light: #999;
     --color-gray-medium: #666666;
     --color-gray-dark: #333333;
+    --color-overlay: rgba( 0, 0, 0, 0.4 );
     --unit1: 20px;
 
     --icon-close: url("data:image/svg+xml,%3Csvg stroke='%23fff' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cline stroke-width='4' x1='2' x2='30' y1='2' y2='30'/%3E%3Cline stroke-width='4' x1='2' x2='30' y1='30' y2='2'/%3E%3C/svg%3E");
@@ -40,7 +41,7 @@ body {
 }
 
 :root .theme--light {
-    --color-background-default: #eff1f9;
+    --color-background-default: #f1f1f1;
     --color-text-light: #222;
     --color-text-dark: #fff;
     --color-text-default: rgba( 0, 0, 0, 0.7 );
@@ -148,7 +149,7 @@ main.main {
 }
 
 .grid__item {
-    width: 190px;
+    width: 153px;
     margin: 0 40px 40px 0;
 }
 
@@ -285,12 +286,15 @@ main.main {
 }
 
 .card__title {
-    padding-bottom: 10px;
+    padding-bottom: 5px;
     transition: 0.2s;
-    font-size: 1.2rem;
+    font-size: 1rem;
+    line-height: 1.2;
 }
 
 .card__url {
+    font-size: 0.625rem;
+    line-height: 1.2;
     padding-bottom: 0px;
     transition: 0.2s;
     color: rgba( 255, 255, 255, 0.25 );
@@ -298,6 +302,35 @@ main.main {
 
 .theme--light .card__url {
     color: var( --color-text-default );
+}
+
+.card--plus {
+    align-items: center;
+    justify-content: center;
+    box-shadow: initial;
+    background: rgba( 0, 0, 0, 0.025 );
+    color: rgba( 0, 0, 0, 0.35 );
+    font-weight: 700;
+}
+
+.card--plus:hover {
+    cursor: pointer;
+    box-shadow: initial;
+}
+
+.theme--dark .card--plus {
+    box-shadow: initial;
+    background: rgba( 255, 255, 255, 0.025 );
+    color: rgba( 255, 255, 255, 0.4 );
+}
+
+.card__plus span {
+    display: block;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 100%;
+    transform: translate3d( 0, -5px, 0 );
 }
 
 .button {
@@ -384,7 +417,7 @@ main.main {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba( 0, 0, 0, 0.4 );
+    background: var( --color-overlay );
 }
 
 .modal__inner {
@@ -509,6 +542,16 @@ input:after {
     display: block;
     transition: var( --transition-fast );
     background: var( --color-theme-2 );
+}
+
+.sidebar__overlay {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: -100vw;
+    background: var( --color-overlay );
 }
 
 .sidebar-enter-active,
