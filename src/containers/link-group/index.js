@@ -10,7 +10,7 @@ import { currentUserIsOwner, fireBaseQuery, listSubCollections } from '../../sha
 const LinkGroup = ( { match } ) => {
 
     const [ linkGroup, setLinkGroup ] = useState( [] )
-
+    
     const [ linkGroupSubCollections, setLinkGroupSubCollections ] = useState ( [] )
 
     const [ modalState, setModalState ] = useState( false )
@@ -25,7 +25,7 @@ const LinkGroup = ( { match } ) => {
             console.log( 'cleanup' )
         }
     }, [] );
-
+    
     // Get the subcollections of links for the current quicklinks page
     useEffect( () => {
         linkGroup.length ? listSubCollections( 'linkgroups', linkGroup[0].id, setLinkGroupSubCollections ) : [];
@@ -36,8 +36,10 @@ const LinkGroup = ( { match } ) => {
     }, [ linkGroup ] )
 
     // Show the modalCreateLink component if user is authenticated and the group owner
-    const showModalCreateGroup = currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkGroup.uid );
 
+
+    const isAuthOwner = linkGroup.length && currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkGroup[ 0 ].uid );
+    console.log( isAuthOwner )
     return (
         <main className="main">
             <div className="container">
@@ -64,8 +66,8 @@ const LinkGroup = ( { match } ) => {
                     </div>{/* .linkgroup__col2 */}
                 </div>{/* .linkgroup */}
             </div>
-            { appStateNonPersisted.authenticated && <ButtonCreateLink buttonOnclick={ setModalState } toggleState={ modalState } /> }
-            { showModalCreateGroup && modalState && <ModalCreateLink modalState={ modalState } setModalState={ setModalState } linkGroupUid={ linkGroupUid } linkGroupId={ linkGroupId } linkGroupSubCollection={ subCollectionId } /> }
+            { isAuthOwner && <ButtonCreateLink buttonOnclick={ setModalState } toggleState={ modalState } /> }
+            { isAuthOwner && modalState && <ModalCreateGroup modalState={ modalState } setModalState={ setModalState } linkGroupUid={ linkGroup[ 0 ].uid } /> }
         </main>
     )
 }
