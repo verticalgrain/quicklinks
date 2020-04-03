@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { db } from '../../firebase'
 
-const FormLink = ( { linkGroupId, callBack } ) => {
+const FormLink = ( { linkGroupId, linkGroupSubCollection, callBack } ) => {
     const [ link, setLink ] = useState( {
         title: '',
         href: '',
@@ -18,9 +18,12 @@ const FormLink = ( { linkGroupId, callBack } ) => {
         }
     }, [] )
 
+    // TODO:
+    // If no collection exists, add to default collection
+    // If collection exists, add to that collection (via prop passed from list-links)
     const handleSubmit = e => {
         e.preventDefault();
-        db.collection( 'linkgroups' ).doc( linkGroupId ).collection( 'links' ).add( link );
+        db.collection( 'linkgroups' ).doc( linkGroupId ).collection( linkGroupSubCollection ).add( link );
         callBack && callBack( false )
         setLink( {
             title: '',
@@ -31,10 +34,6 @@ const FormLink = ( { linkGroupId, callBack } ) => {
     const handleChange = e => {
         setLink( { ...link, [ e.target.name ]: e.target.value } )
     }
-
-    // When the form-link is submitted
-    // Get the id of the current document, by the current slug
-    // Add the link to the sub-collection of the document
 
     return (
         <form className="form form--link" onSubmit={ handleSubmit }>

@@ -1,29 +1,42 @@
 import React, { Fragment, useContext, useEffect, useState } from 'react'
 
 import ListLinks from '../../components/list-links/index'
-import ModalCreateLink from '../../components/modal-create-link/index'
 import { AppContextNonPersisted } from '../../contextNonPersisted'
+import ButtonCreateLink from '../../components/button-create-link/index'
+import ModalCreateGroup from '../../components/modal-create-group/index'
 
-import { currentUserIsOwner, fireBaseQuery } from '../../shared/utilities'
+import { currentUserIsOwner, fireBaseQuery, listSubCollections } from '../../shared/utilities'
 
 const LinkGroup = ( { match } ) => {
 
     const [ linkGroup, setLinkGroup ] = useState( [] )
 
+    const [ linkGroupSubCollections, setLinkGroupSubCollections ] = useState ( [] )
+
     const [ modalState, setModalState ] = useState( false )
 
     const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
 
+    // Get the details of the current quicklinks page
     useEffect( () => {
-        fireBaseQuery( 'linkgroups', 'slug', match.params.groupslug, setLinkGroup );
+        fireBaseQuery( 'linkgroups', 'slug', match.params.groupslug, setLinkGroup )
 
         return () => {
-            console.log( 'cleanup' );
+            console.log( 'cleanup' )
         }
     }, [] );
 
+    // Get the subcollections of links for the current quicklinks page
+    useEffect( () => {
+        linkGroup.length ? listSubCollections( 'linkgroups', linkGroup[0].id, setLinkGroupSubCollections ) : [];
+
+        return () => {
+            console.log( 'cleanup' )
+        }
+    }, [ linkGroup ] )
+
     // Show the modalCreateLink component if user is authenticated and the group owner
-    const showModalCreateLink = linkGroup.length && currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkGroup[ 0 ].uid );
+    const showModalCreateGroup = currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkGroup.uid );
 
     return (
         <main className="main">
@@ -36,20 +49,23 @@ const LinkGroup = ( { match } ) => {
                     </div>
                     <div className="linkgroup__col2 color--col2">
                         <div className="linkgroup__links">
-                            <div className="grid">
-                                { linkGroup.length ?
-                                    <Fragment>
-                                        <ListLinks modalState={ modalState } setModalState={ setModalState } linkGroupId={ linkGroup[ 0 ].id } linkGroupUid={ linkGroup[ 0 ].uid } />
-                                    </Fragment>
-                                :
-                                    <div>Ooops, the group does not seem to exist.</div>
-                                }
-                            </div>
+                            { linkGroup.length ?
+                                linkGroupSubCollections && linkGroupSubCollections.map( ( subCollection, index ) => (
+                                    <Fragment key={ subCollection + index}>
+                                        <div className="grid">
+                                            <ListLinks linkGroupId={ linkGroup[ 0 ].id } linkGroupUid={ linkGroup[ 0 ].uid } subCollectionId={ subCollection } />
+                                        </div>
+                                    </Fragment>  
+                                ))
+                            :
+                                <div>Ooops, the group does not seem to exist.</div>
+                            }
                         </div>
                     </div>{/* .linkgroup__col2 */}
                 </div>{/* .linkgroup */}
-                { showModalCreateLink && <ModalCreateLink modalState={ modalState } setModalState={ setModalState } linkGroupUid={ linkGroup[ 0 ].uid } linkGroupId={ linkGroup[ 0 ].id } /> }
             </div>
+            { appStateNonPersisted.authenticated && <ButtonCreateLink buttonOnclick={ setModalState } toggleState={ modalState } /> }
+            { showModalCreateGroup && modalState && <ModalCreateLink modalState={ modalState } setModalState={ setModalState } linkGroupUid={ linkGroupUid } linkGroupId={ linkGroupId } linkGroupSubCollection={ subCollectionId } /> }
         </main>
     )
 }

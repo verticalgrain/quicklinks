@@ -4,19 +4,22 @@ import { db } from '../../firebase'
 import { AppContextPersisted } from '../../contextPersisted'
 import { AppContextNonPersisted } from '../../contextNonPersisted'
 import { currentUserIsOwner } from '../../shared/utilities'
+import ModalCreateLink from '../../components/modal-create-link/index'
 
 import './styles.css'
 
-const ListLinks = ( { modalState, setModalState, linkGroupId, linkGroupUid } ) => {
+const ListLinks = ( { linkGroupId, linkGroupUid, subCollectionId } ) => {
 
     const [ links, setLinks ] = useState( [] )
+
+    const [ modalState, setModalState ] = useState( false );
 
     const { appStatePersisted, setAppStatePersisted } = useContext( AppContextPersisted )
 
     const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
 
     useEffect( () => {
-        const unsub = db.collection( 'linkgroups' ).doc( linkGroupId ).collection( 'links' ).onSnapshot( snapshot => {
+        const unsub = db.collection( 'linkgroups' ).doc( linkGroupId ).collection( subCollectionId ).onSnapshot( snapshot => {
             const allLinks = snapshot.docs.map( doc => ( {
                 id: doc.id,
                 ...doc.data()
@@ -30,13 +33,17 @@ const ListLinks = ( { modalState, setModalState, linkGroupId, linkGroupUid } ) =
     }, [] );
 
     const deleteLink = id => {
-        db.collection( 'linkgroups' ).doc( linkGroupId ).collection( 'links' )
+        db.collection( 'linkgroups' ).doc( linkGroupId ).collection( subCollectionId )
         .doc(id)
         .delete();
     }
 
+    // Show the modalCreateLink component if user is authenticated and the group owner
+    const showModalCreateLink = currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkGroupUid );
+
     return (
         <Fragment>
+
             { links.length ? links.map( link => (
                 <div className="grid__item" key={ 'grid__item-' + link.id }>
                     <div className="card color--card">
@@ -58,6 +65,7 @@ const ListLinks = ( { modalState, setModalState, linkGroupId, linkGroupUid } ) =
                     <div className="card__plus"><span>+</span> Add New </div>
                 </div>
             </div>
+            { showModalCreateLink && modalState && <ModalCreateLink modalState={ modalState } setModalState={ setModalState } linkGroupUid={ linkGroupUid } linkGroupId={ linkGroupId } linkGroupSubCollection={ subCollectionId } /> }
         </Fragment>
     )
 }

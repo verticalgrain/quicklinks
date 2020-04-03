@@ -1,4 +1,5 @@
 import React, { useContext } from 'react'
+import * as firebase from 'firebase/app';
 import { db } from '../firebase'
 
 export const generateNewUserId = () => {
@@ -26,16 +27,37 @@ export const fireBaseQuery = ( collection, fieldName, fieldValue, stateFunction,
         } ) )
         stateFunction( allQueryData );
     } )
-    .catch(function(err) {
+    .catch(function( err ) {
         console.log( err );
     })
 }
 
 // Only allow certain functions for authenticed group owner
 export const currentUserIsOwner = ( authenticated, uid, groupUid ) => {
-    
+
     return authenticated && uid === groupUid;
 }
+
+export const listSubCollections = ( collection, document, stateFunction ) => {
+    const getSubCollections = firebase
+        .functions()
+        .httpsCallable(  'getSubCollections' );
+
+    getSubCollections( { docPath: collection + '/' + document } )
+    .then(function(result) {
+        stateFunction( result.data.collections )
+    })
+    .catch(function(error) {
+        // Getting the Error details.
+        var code = error.code;
+        var message = error.message;
+        var details = error.details;
+        console.log( message )
+    });
+}
+
+
+
 
 ///////////////////////// OLD STUFF PROBS DELETEs //////////////////////////
 
@@ -80,3 +102,16 @@ export const fireBaseGetLinkgroups = db.collection( 'linkgroups' ).onSnapshot( s
         ...doc.data()
     } ) )
 } );
+
+
+// List sub collections DOESN'T WORK BECUASE CAN'T CALL LISTCOLLECTIONS() FROM WEB
+// export const listSubCollections = ( collection, document ) => {
+//     let documentRef = db.doc( collection + '/' + document );
+//     console.log( collection )
+//     console.log( document )
+//     documentRef.listCollections().then( collections => {
+//         for ( let collectionItem of collections ) {
+//             console.log( collectionItem.id )
+//         }
+//     } )
+// }
