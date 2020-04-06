@@ -5,7 +5,7 @@ import { AppContextNonPersisted } from '../../contextNonPersisted'
 import ButtonCreateLink from '../../components/button-create-link/index'
 import ModalCreateGroup from '../../components/modal-create-group/index'
 
-import { currentUserIsOwner, fireBaseQuery, listSubCollections } from '../../shared/utilities'
+import { currentUserIsOwner, fireBaseQuery, listSubCollections, createSubCollection } from '../../shared/utilities'
 
 const LinkGroup = ( { match } ) => {
 
@@ -39,7 +39,7 @@ const LinkGroup = ( { match } ) => {
 
 
     const isAuthOwner = linkGroup.length && currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkGroup[ 0 ].uid );
-    console.log( isAuthOwner )
+
     return (
         <main className="main">
             <div className="container">
@@ -53,7 +53,7 @@ const LinkGroup = ( { match } ) => {
                         <div className="linkgroup__links">
                             { linkGroup.length ?
                                 linkGroupSubCollections && linkGroupSubCollections.map( ( subCollection, index ) => (
-                                    <Fragment key={ subCollection + index}>
+                                    <Fragment key={ subCollection + index }>
                                         <div className="grid">
                                             <ListLinks linkGroupId={ linkGroup[ 0 ].id } linkGroupUid={ linkGroup[ 0 ].uid } subCollectionId={ subCollection } />
                                         </div>
@@ -63,11 +63,10 @@ const LinkGroup = ( { match } ) => {
                                 <div>Ooops, the group does not seem to exist.</div>
                             }
                         </div>
-                    </div>{/* .linkgroup__col2 */}
-                </div>{/* .linkgroup */}
+                    </div>
+                </div>
             </div>
-            { isAuthOwner && <ButtonCreateLink buttonOnclick={ setModalState } toggleState={ modalState } /> }
-            { isAuthOwner && modalState && <ModalCreateGroup modalState={ modalState } setModalState={ setModalState } linkGroupUid={ linkGroup[ 0 ].uid } /> }
+            { isAuthOwner && <button onClick={ () => createSubCollection( linkGroup[ 0 ].id ) }>Button Button Button Button Button</button> }
         </main>
     )
 }

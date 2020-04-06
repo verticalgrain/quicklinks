@@ -5,7 +5,7 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 import { db } from '../../firebase'
 import firebase from 'firebase';
-import { convertSpinalCase, fireBaseQuery, generateNewUserId } from '../../shared/utilities'
+import { convertSpinalCase, fireBaseQuery } from '../../shared/utilities'
 
 const FormLink = withRouter( ( { history, ...props } ) => {
     const [ linkgroup, setLinkgroup ] = useState( {

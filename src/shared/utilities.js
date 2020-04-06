@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import * as firebase from 'firebase/app';
 import { db } from '../firebase'
 
-export const generateNewUserId = () => {
+export const generateUniqueId = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let autoId = '';
     for ( let i = 0; i < 20; i++ ) {
@@ -38,6 +38,7 @@ export const currentUserIsOwner = ( authenticated, uid, groupUid ) => {
     return authenticated && uid === groupUid;
 }
 
+// List sub collections of a collection using getSubCollections function
 export const listSubCollections = ( collection, document, stateFunction ) => {
     const getSubCollections = firebase
         .functions()
@@ -56,7 +57,15 @@ export const listSubCollections = ( collection, document, stateFunction ) => {
     });
 }
 
-
+// Create a new subCollection
+export const createSubCollection = ( linkGroupId ) => {
+    const subCollection = {
+        title: '',
+        links: [],
+    }
+    console.log( generateUniqueId() );
+    db.collection( 'linkgroups' ).doc( linkGroupId ).collection( generateUniqueId() ).add( subCollection );
+}
 
 
 ///////////////////////// OLD STUFF PROBS DELETEs //////////////////////////
@@ -102,6 +111,7 @@ export const fireBaseGetLinkgroups = db.collection( 'linkgroups' ).onSnapshot( s
         ...doc.data()
     } ) )
 } );
+
 
 
 // List sub collections DOESN'T WORK BECUASE CAN'T CALL LISTCOLLECTIONS() FROM WEB
