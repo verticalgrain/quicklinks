@@ -10,7 +10,7 @@ import './styles.css'
 
 const ListLinks = ( { linkGroupId, linkGroupUid, subCollectionId } ) => {
 
-    const [ links, setLinks ] = useState( [] )
+    const [ groupData, setGroupData ] = useState( {} )
 
     const [ modalState, setModalState ] = useState( false );
 
@@ -20,11 +20,11 @@ const ListLinks = ( { linkGroupId, linkGroupUid, subCollectionId } ) => {
 
     useEffect( () => {
         const unsub = db.collection( 'linkgroups' ).doc( linkGroupId ).collection( subCollectionId ).onSnapshot( snapshot => {
-            const allLinks = snapshot.docs.map( doc => ( {
+            const subCollection = snapshot.docs.map( doc => ( {
                 id: doc.id,
                 ...doc.data()
             } ) )
-            setLinks( allLinks );
+            setGroupData( subCollection[ 0 ] );
         });
         return () => {
             console.log( 'cleanup' );
@@ -44,8 +44,9 @@ const ListLinks = ( { linkGroupId, linkGroupUid, subCollectionId } ) => {
     return (
         <Fragment>
 
-            { links.length ? links.map( link => (
-                <div className="grid__item" key={ 'grid__item-' + link.id }>
+            { Object.keys( groupData ).length && groupData.links.length ? groupData.links.map( link => {
+                return (
+                <div className="grid__item" key={ 'grid__item-' + link.title }>
                     <div className="card color--card">
                         { currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkGroupUid ) && <div className="card__delete" onClick={ () => deleteLink( link.id ) }></div> }
                         <a className="card__link" href={ link.href } title={ link.title } target={ appStatePersisted.linkTargetBlank ? "_blank" : "_self" } rel={ appStatePersisted.linkTargetBlank ? "noopener noreferrer" : "" }>
@@ -57,15 +58,15 @@ const ListLinks = ( { linkGroupId, linkGroupUid, subCollectionId } ) => {
                         </a>
                     </div>
                 </div>
-            ) )
-            : <div className="u-centered">You don't seem to have any links yet. Please click the plus button to create some.</div>
+            ) } )
+            : <div className="grid__item grid__item--full u-centered">Please click the `Add New` button to add some links to this group.</div>
             }
             <div className="grid__item grid__item--plus">
                 <div className="card card--plus" onClick={ () => setModalState( ! modalState ) }>
                     <div className="card__plus"><span>+</span> Add New </div>
                 </div>
             </div>
-            { showModalCreateLink && modalState && <ModalCreateLink modalState={ modalState } setModalState={ setModalState } linkGroupUid={ linkGroupUid } linkGroupId={ linkGroupId } linkGroupSubCollection={ subCollectionId } /> }
+            { showModalCreateLink && modalState && <ModalCreateLink modalState={ modalState } setModalState={ setModalState } linkGroupUid={ linkGroupUid } linkGroupId={ linkGroupId } linkGroupSubCollectionId={ subCollectionId } groupData={ groupData } /> }
         </Fragment>
     )
 }

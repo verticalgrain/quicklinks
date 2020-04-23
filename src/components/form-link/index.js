@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { db } from '../../firebase'
 
-const FormLink = ( { linkGroupId, linkGroupSubCollection, callBack } ) => {
+const FormLink = ( { linkGroupId, linkGroupSubCollectionId, groupData, callBack } ) => {
     const [ link, setLink ] = useState( {
         title: '',
         href: '',
     } )
+    console.log( linkGroupSubCollectionId )
+    console.log( groupData )
 
     const textInput = useRef( null );
 
@@ -18,12 +20,16 @@ const FormLink = ( { linkGroupId, linkGroupSubCollection, callBack } ) => {
         }
     }, [] )
 
-    // TODO:
-    // If no collection exists, add to default collection
-    // If collection exists, add to that collection (via prop passed from list-links)
+    // Get the first (only) document in the subcollection
+
+    // If it doesn't exist yet, add a dummy
+    // When form is submitted,
+    // Add the link and title to the end of the array of links
     const handleSubmit = e => {
         e.preventDefault();
-        db.collection( 'linkgroups' ).doc( linkGroupId ).collection( linkGroupSubCollection ).add( link );
+        const subCollection = groupData;
+        subCollection.links.push( link )
+        db.collection( 'linkgroups' ).doc( linkGroupId ).collection( linkGroupSubCollectionId ).doc( groupData.id ).set( subCollection );
         callBack && callBack( false )
         setLink( {
             title: '',

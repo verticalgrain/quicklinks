@@ -58,13 +58,15 @@ export const listSubCollections = ( collection, document, stateFunction ) => {
 }
 
 // Create a new subCollection
-export const createSubCollection = ( linkGroupId ) => {
+export const createSubCollection = ( linkGroupId, callback ) => {
     const subCollection = {
         title: '',
         links: [],
     }
-    console.log( generateUniqueId() );
-    db.collection( 'linkgroups' ).doc( linkGroupId ).collection( generateUniqueId() ).add( subCollection );
+    db.collection( 'linkgroups' ).doc( linkGroupId ).collection( generateUniqueId() ).add( subCollection )
+    .then( function() {
+        return callback
+    } )
 }
 
 

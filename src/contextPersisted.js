@@ -6,12 +6,12 @@ export const AppContextPersisted = React.createContext( {
 } );
 
 export const AppContextPersistedProvider = ( { children } ) => {
-    
-    const [ appStatePersisted, setAppStatePersisted ] = useState( 
+
+    const [ appStatePersisted, setAppStatePersisted ] = useState(
         JSON.parse( localStorage.getItem( 'appLocalstoragePersisted' ) ) || {
             theme: 'dark',
             linkTargetBlank: true,
-        } 
+        }
     );
 
     useEffect( () => {
@@ -20,8 +20,6 @@ export const AppContextPersistedProvider = ( { children } ) => {
 
     const appStateContext = { appStatePersisted, setAppStatePersisted };
 
-    console.log( appStatePersisted )
-    
     return (
         <AppContextPersisted.Provider value={ appStateContext }>
             { children }

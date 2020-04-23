@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import CreateLinkGroup from '../create-link-group/index'
 import firebase from 'firebase';
-import LinkGroup from '../link-group/index'
+import LinkPage from '../link-page/index'
 import Sidebar from '../../components/sidebar/index'
 import { CSSTransition } from 'react-transition-group'
 import { AppContextPersisted, AppContextPersistedProvider } from '../../contextPersisted'
@@ -27,14 +27,20 @@ const Layout = () => {
             >
                 <Sidebar sidebarOpen={ sidebarOpen } setSidebarOpen={ setSidebarOpen } />
             </CSSTransition>
-            <button className="button button--settings" onClick={ () => setSidebarOpen( ! sidebarOpen ) }>
-                <div className="button__inner"></div>
-            </button>
+            <nav className="header">
+                <div className="logo">
+                    <img src="assets/logo2.svg" />
+                </div>
+                <button className="button button--settings header__end" onClick={ () => setSidebarOpen( ! sidebarOpen ) }>
+                    <div className="button__inner"></div>
+                </button>
+            </nav>
+
             <Router>
                 <Switch>
                     <Route path='/' exact component={ CreateLinkGroup } />
                     <Route path='/create' exact component={ CreateLinkGroup } />
-                    <Route path='/:groupslug' component={ LinkGroup } />
+                    <Route path='/:groupslug' component={ LinkPage } />
                 </Switch>
             </Router>
         </div>

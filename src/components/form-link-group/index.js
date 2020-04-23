@@ -5,7 +5,7 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 import { db } from '../../firebase'
 import firebase from 'firebase';
-import { convertSpinalCase, fireBaseQuery } from '../../shared/utilities'
+import { convertSpinalCase, createSubCollection } from '../../shared/utilities'
 
 const FormLink = withRouter( ( { history, ...props } ) => {
     const [ linkgroup, setLinkgroup ] = useState( {
@@ -13,7 +13,7 @@ const FormLink = withRouter( ( { history, ...props } ) => {
         slug: '',
         uid: '',
     } )
-    
+
     const [ linkgroupCreationStatus, setLinkgroupCreationStatus ] = useState( {
         success: false,
         statusMessage: '',
@@ -27,14 +27,16 @@ const FormLink = withRouter( ( { history, ...props } ) => {
     // Query firebase to check if the slug already exists
     // If it does, tell the user to pick a new slug
     // If it doesn't, create the new collection
-    const createLinkgroupCollection = ( linkgroup ) => {
-        db.collection( 'linkgroups' ).where( 'slug', '==', linkgroup.slug )
+    const createLinkgroupCollection = ( linkgroupCandidate ) => {
+        db.collection( 'linkgroups' ).where( 'slug', '==', linkgroupCandidate.slug )
         .get()
         .then( function( querySnapshot ) {
 
             if ( querySnapshot.docs.length === 0 ) {
-
-                db.collection( 'linkgroups' ).add( linkgroup )
+                db.collection( 'linkgroups' ).add( linkgroupCandidate )
+                .then( function( response ) {
+                    createSubCollection( response.id )
+                } )
                 .then( function( response ) {
                     setLinkgroupCreationStatus( {
                         success: true,
@@ -43,7 +45,7 @@ const FormLink = withRouter( ( { history, ...props } ) => {
 
                     setTimeout( function() {
                         // Redirect user to the new linkGroup page
-                        history.push( '/' + linkgroup.slug );
+                        history.push( '/' + linkgroupCandidate.slug );
                     }, 1000 )
 
                 } )
@@ -71,7 +73,7 @@ const FormLink = withRouter( ( { history, ...props } ) => {
     // TODO: add authentication failure state
     useEffect( () => {
         const unsub = firebase.auth().onAuthStateChanged( function( user ) {
-            if ( user && !authFormInitiated ) {           
+            if ( user && !authFormInitiated ) {
                 // User is authenticated on initial component mount
                 setLinkgroup( {
                     name: '',
@@ -79,7 +81,7 @@ const FormLink = withRouter( ( { history, ...props } ) => {
                     uid: user.uid,
                 } )
                 setIsSignedIn( true )
-            } else if ( user && authFormInitiated ) {          
+            } else if ( user && authFormInitiated ) {
                 // User is authenticated because of clicking login button
                 setLinkgroup( {
                     name: linkgroup.name,
@@ -90,7 +92,7 @@ const FormLink = withRouter( ( { history, ...props } ) => {
                 createLinkgroupCollection( {
                     name: linkgroup.name,
                     slug: linkgroup.slug,
-                    uid: user.uid 
+                    uid: user.uid
                 } )
             } else if ( !user && authFormInitiated ) {
                 // User is not authenticated yet but login button has been clicked
@@ -149,7 +151,7 @@ const FormLink = withRouter( ( { history, ...props } ) => {
     const handleSubmit = e => {
         e.preventDefault();
 
-        createLinkgroupCollection();
+        createLinkgroupCollection( linkgroup );
     }
 
     const handleChange = e => {
@@ -167,7 +169,7 @@ const FormLink = withRouter( ( { history, ...props } ) => {
 
     return (
         <Fragment>
-            <form className="form form--link-group" onSubmit={ handleSubmit }>
+            <form className="form form--link-group" onSubmit={ handleSubmit } onChange={ handleChange }>
                 <div className='input-field'>
                     <label htmlFor='name'>
                         Name for your quicklinks:
@@ -185,6 +187,7 @@ const FormLink = withRouter( ( { history, ...props } ) => {
                     />
                 </div>
                 { linkgroupCreationStatus.errorMessage && <div>{ linkgroupCreationStatus.errorMessage }</div> }
+                { linkgroup.slug }
                 { isSignedIn && <div>
                         <button type='submit'>
                             Create new quicklinks

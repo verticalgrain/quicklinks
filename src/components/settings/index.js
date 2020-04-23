@@ -40,6 +40,7 @@ const Settings = () => {
                     <input className="toggle__checkbox" type="checkbox" id="toggle--target" name="toggle--target" defaultChecked={ linkTargetBlank } onClick={ () => setAppStatePersisted( { theme: theme, linkTargetBlank: ! linkTargetBlank, } ) } />
                     <label className="toggle__label" htmlFor="toggle--target"></label>
                 </div>
+                <a href="/">Create new quicklinks page</a>
             </div>
         </Fragment>
     )

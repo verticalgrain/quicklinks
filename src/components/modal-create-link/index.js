@@ -4,7 +4,7 @@ import ButtonCreateLink from '../button-create-link/index'
 import { AppContextNonPersisted } from '../../contextNonPersisted'
 import FormLink from '../form-link/index'
 
-const ModalCreateLink = ( { modalState, setModalState, linkGroupId, linkGroupUid, linkGroupSubCollection } ) => {
+const ModalCreateLink = ( { modalState, setModalState, linkGroupId, linkGroupUid, linkGroupSubCollectionId, groupData } ) => {
 
     const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
 
@@ -15,7 +15,7 @@ const ModalCreateLink = ( { modalState, setModalState, linkGroupId, linkGroupUid
                 <div className="modal__inner">
                     <div className="modal__title">Add a quicklink</div>
                     <div className="modal__content">
-                        <FormLink linkGroupId={ linkGroupId } linkGroupSubCollection={ linkGroupSubCollection } callBack={ setModalState }  />
+                        <FormLink linkGroupId={ linkGroupId } linkGroupSubCollectionId={ linkGroupSubCollectionId } groupData={ groupData } callBack={ setModalState }  />
                     </div>
                 </div>
             </div>
