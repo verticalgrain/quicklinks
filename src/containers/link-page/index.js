@@ -1,7 +1,7 @@
 import React, { Fragment, useContext, useEffect, useState, useReducer } from 'react'
 
 import { AppContextNonPersisted } from '../../contextNonPersisted'
-import ButtonCreateLink from '../../components/button-create-link/index'
+import EditableText from '../../components/editable-text/index'
 import LinkGroup from '../../components/link-group/index'
 
 import { currentUserIsOwner, fireBaseQuery, listSubCollections, createSubCollection } from '../../shared/utilities'
@@ -48,7 +48,7 @@ const LinkPage = ( { match } ) => {
                     <div className="linkpage__col1 color--col1">
                         <div className="linkpage__header">
                             <div className="linkpage__name">
-                                { linkPage[0] && linkPage[0].name }
+                                { linkPage[0] && <EditableText text={ linkPage[0].name } linkGroupUid={ linkPage[ 0 ].uid }  /> }
                             </div>
                             { linkPage[0] && linkPage[0].description &&
                                 <div className="linkpage__description">

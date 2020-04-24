@@ -34,7 +34,6 @@ export const fireBaseQuery = ( collection, fieldName, fieldValue, stateFunction,
 
 // Only allow certain functions for authenticed group owner
 export const currentUserIsOwner = ( authenticated, uid, groupUid ) => {
-
     return authenticated && uid === groupUid;
 }
 
