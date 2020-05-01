@@ -48,7 +48,7 @@ const LinkPage = ( { match } ) => {
                     <div className="linkpage__col1 color--col1">
                         <div className="linkpage__header">
                             <div className="linkpage__name">
-                                { linkPage[0] && <EditableText text={ linkPage[0].name } linkGroupUid={ linkPage[ 0 ].uid }  /> }
+                                { linkPage[0] && <EditableText text={ linkPage[0].name } linkPage={ linkPage[ 0 ] }  /> }
                             </div>
                             { linkPage[0] && linkPage[0].description &&
                                 <div className="linkpage__description">
@@ -61,7 +61,7 @@ const LinkPage = ( { match } ) => {
                         <div className="linkpage__links">
                             { linkPage.length ?
                                 linkPageSubCollections && linkPageSubCollections.map( ( subCollection, index ) => (
-                                    <LinkGroup key={ index + subCollection  } linkGroup={ linkPage[ 0 ] } subCollectionId={ subCollection } />
+                                    <LinkGroup key={ index + subCollection  } linkPage={ linkPage[ 0 ] } subCollectionId={ subCollection } />
                                 ))
                             :
                                 <div>Ooops, the group does not seem to exist.</div>

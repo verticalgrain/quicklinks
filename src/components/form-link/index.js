@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { db } from '../../firebase'
+import { updateLinkGroup } from '../../shared/utilities'
 
 const FormLink = ( { linkGroupId, linkGroupSubCollectionId, groupData, callBack } ) => {
     const [ link, setLink ] = useState( {
         title: '',
         href: '',
     } )
-    console.log( linkGroupSubCollectionId )
-    console.log( groupData )
 
     const textInput = useRef( null );
 
@@ -21,7 +20,6 @@ const FormLink = ( { linkGroupId, linkGroupSubCollectionId, groupData, callBack 
     }, [] )
 
     // Get the first (only) document in the subcollection
-
     // If it doesn't exist yet, add a dummy
     // When form is submitted,
     // Add the link and title to the end of the array of links
@@ -29,7 +27,7 @@ const FormLink = ( { linkGroupId, linkGroupSubCollectionId, groupData, callBack 
         e.preventDefault();
         const subCollection = groupData;
         subCollection.links.push( link )
-        db.collection( 'linkgroups' ).doc( linkGroupId ).collection( linkGroupSubCollectionId ).doc( groupData.id ).set( subCollection );
+        updateLinkGroup( linkGroupId, linkGroupSubCollectionId, groupData.id, subCollection )
         callBack && callBack( false )
         setLink( {
             title: '',

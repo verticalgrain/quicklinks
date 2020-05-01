@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 
 import { AppContextNonPersisted } from '../../contextNonPersisted'
-import { currentUserIsOwner } from '../../shared/utilities'
+import { currentUserIsOwner, updateLinkGroup } from '../../shared/utilities'
 
 // Display text
 // Check if user has privileges to edit
@@ -9,17 +9,22 @@ import { currentUserIsOwner } from '../../shared/utilities'
 // Click the text and it turns into an input field to edit
 // Click out of the input field and it saves and updates firebase
 
-const EditableText = ( { className, text, linkGroupUid } ) => {
+const EditableText = ( { className, text, linkPage } ) => {
 
     const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
 
     const [ textState, setTextState ] = useState( text )
 
-    const isEditable = currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkGroupUid );
+    const isEditable = currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkPage.uid );
+
+    const updateEditableText = ( e ) => {
+        console.log( blur )
+        // updateLinkGroup( linkPage.id, linkGroup.id,  );
+    }
 
     return (
         <div className={ className }>
-            <div className="editable-text" contentEditable={ isEditable } suppressContentEditableWarning={ true }>
+            <div className="editable-text" contentEditable={ isEditable } onBlur={ () => updateEditableText() } suppressContentEditableWarning={ true }>
                 { textState }
             </div>
         </div>

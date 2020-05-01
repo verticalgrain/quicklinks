@@ -8,6 +8,7 @@ import ModalCreateLink from '../../components/modal-create-link/index'
 
 import './styles.css'
 
+// DEPRECATED - moved inside link-group component
 const ListLinks = ( { linkGroupId, linkGroupUid, subCollectionId } ) => {
 
     const [ groupData, setGroupData ] = useState( {} )

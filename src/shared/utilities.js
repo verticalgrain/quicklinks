@@ -68,6 +68,12 @@ export const createSubCollection = ( linkGroupId, callback ) => {
     } )
 }
 
+// Update link group data
+export const updateLinkGroup = ( { linkPageId, linkGroupId, linkGroupDocId, dataNew } ) => {
+    db.collection( 'linkgroups' ).doc( linkPageId ).collection( linkGroupId ).doc( linkGroupDocId ).set( dataNew );
+}
+
+
 
 ///////////////////////// OLD STUFF PROBS DELETEs //////////////////////////
 

@@ -734,6 +734,7 @@ input:after {
 
 nav.header {
     position: sticky;
+    z-index: 9;
     top: 0;
     display: flex;
     flex-direction: row;
@@ -754,6 +755,7 @@ nav.header {
 .editable-text {
     position: relative;
     display: inline-block;
+    min-width: 30px;
 }
 
 .editable-text::before {
@@ -769,9 +771,11 @@ nav.header {
     right: -26px;
     opacity: 0;
     transition-duration: 0.2s;
+    outline:none !important;
 }
 
-.editable-text[ contenteditable="true" ]:hover {
+.editable-text[ contenteditable="true" ]:hover,
+.editable-text[ contenteditable="true" ]:focus {
     cursor: pointer;
 }
 
