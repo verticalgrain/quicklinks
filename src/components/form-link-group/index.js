@@ -187,7 +187,9 @@ const FormLink = withRouter( ( { history, ...props } ) => {
                     />
                 </div>
                 { linkgroupCreationStatus.errorMessage && <div>{ linkgroupCreationStatus.errorMessage }</div> }
-                { linkgroup.slug }
+                Quicklinks page slug: { linkgroup.slug }
+                <br />
+                <br />
                 { isSignedIn && <div>
                         <button type='submit'>
                             Create new quicklinks

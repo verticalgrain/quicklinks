@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import { db } from '../../firebase'
 import { updateLinkGroup } from '../../shared/utilities'
 
-const FormLink = ( { linkGroupId, linkGroupSubCollectionId, groupData, callBack } ) => {
+const FormLink = ( { linkPageId, linkGroupSubCollectionId, groupData, callBack } ) => {
+
     const [ link, setLink ] = useState( {
         title: '',
         href: '',
@@ -25,9 +26,9 @@ const FormLink = ( { linkGroupId, linkGroupSubCollectionId, groupData, callBack 
     // Add the link and title to the end of the array of links
     const handleSubmit = e => {
         e.preventDefault();
-        const subCollection = groupData;
-        subCollection.links.push( link )
-        updateLinkGroup( linkGroupId, linkGroupSubCollectionId, groupData.id, subCollection )
+        const groupDataNew = groupData;
+        groupDataNew.links.push( link )
+        updateLinkGroup( linkPageId, linkGroupSubCollectionId, groupData.id, groupDataNew )
         callBack && callBack( false )
         setLink( {
             title: '',

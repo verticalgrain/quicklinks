@@ -8,8 +8,7 @@ const CreateLinkGroup = () => {
             <main className="main">
                 <div className="container container--column container--maxwidth-600">
                     <div className="u-centered">
-                        <h1>Start using quicklinks in 2 seconds</h1>
-                        <h2>It's free forever so why not?</h2>
+                        <h1>Create a Quicklinks page</h1>
                     </div>
                     <FormLinkGroup />
                 </div>

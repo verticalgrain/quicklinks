@@ -1,10 +1,9 @@
 import React, { Fragment, useContext, useState } from 'react';
 
-import ButtonCreateLink from '../button-create-link/index'
 import { AppContextNonPersisted } from '../../contextNonPersisted'
 import FormLink from '../form-link/index'
 
-const ModalCreateLink = ( { modalState, setModalState, linkGroupId, linkGroupUid, linkGroupSubCollectionId, groupData } ) => {
+const ModalCreateLink = ( { modalState, setModalState, linkPageId, linkGroupUid, linkGroupSubCollectionId, groupData } ) => {
 
     const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
 
@@ -15,12 +14,11 @@ const ModalCreateLink = ( { modalState, setModalState, linkGroupId, linkGroupUid
                 <div className="modal__inner">
                     <div className="modal__title">Add a quicklink</div>
                     <div className="modal__content">
-                        <FormLink linkGroupId={ linkGroupId } linkGroupSubCollectionId={ linkGroupSubCollectionId } groupData={ groupData } callBack={ setModalState }  />
+                        <FormLink linkPageId={ linkPageId } linkGroupSubCollectionId={ linkGroupSubCollectionId } groupData={ groupData } callBack={ setModalState }  />
                     </div>
                 </div>
             </div>
             }
-            { appStateNonPersisted.authenticated && <ButtonCreateLink buttonOnclick={ setModalState } toggleState={ modalState } /> }
         </Fragment>
     )
 

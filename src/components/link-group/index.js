@@ -9,7 +9,7 @@ import { AppContextNonPersisted } from '../../contextNonPersisted'
 import { currentUserIsOwner } from '../../shared/utilities'
 
 const LinkGroup = ( { linkPage, subCollectionId } ) => {
-    console.log( subCollectionId )
+
     const [ groupData, setGroupData ] = useState( {} )
 
     const [ modalState, setModalState ] = useState( false );
@@ -49,7 +49,7 @@ const LinkGroup = ( { linkPage, subCollectionId } ) => {
 
     return (
         <div className={ 'grid ' + groupVisibilityClass }>
-            <EditableText className="grid__title" text="Untitled group" linkPage={ linkPage } />
+            <EditableText className="grid__title" text={ groupData.title } linkPage={ linkPage } linkGroup={ groupData } editableTextContext='linkGroupTitle' />
             <Fragment>
                 { Object.keys( groupData ).length && groupData.links.length ? groupData.links.map( link => {
                     return (
@@ -64,11 +64,11 @@ const LinkGroup = ( { linkPage, subCollectionId } ) => {
                         <div className="card__plus"><span>+</span> Add New </div>
                     </div>
                 </div>
-                { showModalCreateLink && modalState && <ModalCreateLink modalState={ modalState } setModalState={ setModalState } linkGroupUid={ linkPage.uid } linkGroupId={ linkPage.id } linkGroupSubCollectionId={ subCollectionId } groupData={ groupData } /> }
+                { showModalCreateLink && modalState && <ModalCreateLink modalState={ modalState } setModalState={ setModalState } linkGroupUid={ linkPage.uid } linkPageId={ linkPage.id } linkGroupSubCollectionId={ subCollectionId } groupData={ groupData } /> }
             </Fragment>
 
             <div className="grid__collapse-expand" onClick={ () => setGroupVisibility( ! groupVisibility ) }>
-                <svg height="32" id="chevron-up" viewBox="0 0 32 32" width="32" xmlns="http://www.w3.org/2000/svg"><path fill="red" d="M1 20 L16 6 L31 20 L27 24 L16 14 L5 24 z"/></svg>
+                <svg height="32" id="chevron-up" viewBox="0 0 32 32" width="32" xmlns="http://www.w3.org/2000/svg"><path fill="#DC493A" d="M1 20 L16 6 L31 20 L27 24 L16 14 L5 24 z"/></svg>
             </div>
         </div>
     )

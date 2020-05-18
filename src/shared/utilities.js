@@ -57,23 +57,45 @@ export const listSubCollections = ( collection, document, stateFunction ) => {
 }
 
 // Create a new subCollection
-export const createSubCollection = ( linkGroupId, callback ) => {
+export const createSubCollection = ( linkPageId, callback ) => {
+    const collectionId = generateUniqueId();
     const subCollection = {
-        title: '',
+        parentLinkGroupId: collectionId,
+        parentLinkPageId: linkPageId,
+        title: 'Untitled link group',
         links: [],
     }
-    db.collection( 'linkgroups' ).doc( linkGroupId ).collection( generateUniqueId() ).add( subCollection )
+    db.collection( 'linkgroups' ).doc( linkPageId ).collection( collectionId ).add( subCollection )
     .then( function() {
-        return callback
+        return callback()
     } )
 }
 
-// Update link group data
-export const updateLinkGroup = ( { linkPageId, linkGroupId, linkGroupDocId, dataNew } ) => {
+/**
+ * Update a link group object.
+ *
+ * @param {number}      linkPageId      ID of the link page
+ * @param {number}      linkGroupId     ID of the specific link group on the page
+ * @param {number}      linkGroupDocId  Optional parameter.
+ * @param {Object}      dataNew         Object of data to overwrite link group object with
+ *
+ * @returns {Object}
+ */
+export const updateLinkGroup = ( linkPageId, linkGroupId, linkGroupDocId, dataNew ) => {
     db.collection( 'linkgroups' ).doc( linkPageId ).collection( linkGroupId ).doc( linkGroupDocId ).set( dataNew );
 }
 
-
+/**
+ * Update a link group object.
+ *
+ * @param {number}      linkPageId      ID of the link page
+ * @param {Object}      dataNew         Object of data to overwrite link group object with
+ *
+ * @returns {Object}
+ */
+export const updateLinkPage = ( linkPageId, dataNew ) => {
+    db.collection( 'linkgroups' ).doc( linkPageId ).set( dataNew );
+}
 
 ///////////////////////// OLD STUFF PROBS DELETEs //////////////////////////
 

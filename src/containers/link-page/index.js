@@ -16,6 +16,8 @@ const LinkPage = ( { match } ) => {
 
     const [ _count, forceUpdate ] = useReducer(x => x + 1, 0);
 
+    console.log( _count );
+
     // Get the details of the current quicklinks page
     useEffect( () => {
         fireBaseQuery( 'linkgroups', 'slug', match.params.groupslug, setLinkPage )
@@ -48,7 +50,7 @@ const LinkPage = ( { match } ) => {
                     <div className="linkpage__col1 color--col1">
                         <div className="linkpage__header">
                             <div className="linkpage__name">
-                                { linkPage[0] && <EditableText text={ linkPage[0].name } linkPage={ linkPage[ 0 ] }  /> }
+                                { linkPage[0] && <EditableText text={ linkPage[0].name } linkPage={ linkPage[ 0 ] } editableTextContext='linkPageTitle' /> }
                             </div>
                             { linkPage[0] && linkPage[0].description &&
                                 <div className="linkpage__description">
@@ -69,8 +71,12 @@ const LinkPage = ( { match } ) => {
                         </div>
                     </div>
                 </div>
+                { isAuthOwner &&
+                    <div className="button__wrapper button__wrapper--bigred">
+                        <div className="button button--bigred" onClick={ () => createNewSubCollection( linkPage[ 0 ].id ) }>+</div>
+                    </div>
+                }
             </div>
-            { isAuthOwner && <button onClick={ () => createNewSubCollection( linkPage[ 0 ].id ) }>Button Button Button Button Button</button> }
         </main>
     )
 }

@@ -7,7 +7,7 @@ export const AppContextNonPersisted = React.createContext( {
 } );
 
 export const AppContextNonPersistedProvider = ( { children } ) => {
-    
+
     const [ appStateNonPersisted, setAppStateNonPersisted ] = useState( {
         authenticated: false,
         uid: null,

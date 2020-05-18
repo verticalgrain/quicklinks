@@ -27,7 +27,11 @@ exports.getSubCollections = functions.https.onCall(async (data, context) => {
 
     const collections = await admin.firestore().doc(docPath).listCollections();
     const collectionIds = collections.map(col => col.id);
-
+    // const collectionIds = collections.map(col => col.data());
+    // const collectionIds = collections.map(col => col.doc);
+    // const collectionIds = collections.map(col => col.doc.listCollections());
+    // const collectionIds = collections.map(col => col.doc.data());
+    // const collectionIds = collections.map(col => col.doc( col.path ).data());
     return { collections: collectionIds };
 
 });
