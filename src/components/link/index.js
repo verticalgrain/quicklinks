@@ -3,6 +3,7 @@ import React from 'react'
 import './styles.css'
 
 const Link = ( { href, id, title, authenticated, linkTargetBlank, deleteLink } ) => {
+    console.log( id );
     return (
         <div className="card color--card">
             { authenticated && <div className="card__delete" onClick={ () => deleteLink( id ) }></div> }

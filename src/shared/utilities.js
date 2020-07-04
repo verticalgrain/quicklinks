@@ -25,7 +25,7 @@ export const fireBaseQuery = ( collection, fieldName, fieldValue, stateFunction,
             id: doc.id,
             ...doc.data()
         } ) )
-        stateFunction( allQueryData );
+        allQueryData.length ? stateFunction( allQueryData ) : console.log( 'Cant reach firebase, using localstorage' );
     } )
     .catch(function( err ) {
         console.log( err );
@@ -86,7 +86,7 @@ export const updateLinkGroup = ( linkPageId, linkGroupId, linkGroupDocId, dataNe
 }
 
 /**
- * Update a link group object.
+ * Update a link page object.
  *
  * @param {number}      linkPageId      ID of the link page
  * @param {Object}      dataNew         Object of data to overwrite link group object with
@@ -96,6 +96,8 @@ export const updateLinkGroup = ( linkPageId, linkGroupId, linkGroupDocId, dataNe
 export const updateLinkPage = ( linkPageId, dataNew ) => {
     db.collection( 'linkgroups' ).doc( linkPageId ).set( dataNew );
 }
+
+
 
 ///////////////////////// OLD STUFF PROBS DELETEs //////////////////////////
 

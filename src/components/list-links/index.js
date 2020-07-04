@@ -28,7 +28,7 @@ const ListLinks = ( { linkGroupId, linkGroupUid, subCollectionId } ) => {
             setGroupData( subCollection[ 0 ] );
         });
         return () => {
-            console.log( 'cleanup' );
+            console.log( 'cleanup listLinks' );
             unsub();
         }
     }, [] );

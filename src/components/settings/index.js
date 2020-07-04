@@ -9,7 +9,7 @@ const Settings = () => {
     const { appStatePersisted, setAppStatePersisted } = useContext( AppContextPersisted )
 
     const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
-    
+
     const { theme, linkTargetBlank } = appStatePersisted;
 
     const themeState = () => {

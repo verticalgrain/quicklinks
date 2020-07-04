@@ -4,26 +4,27 @@ import { AppContextNonPersisted } from '../../contextNonPersisted'
 import EditableText from '../../components/editable-text/index'
 import LinkGroup from '../../components/link-group/index'
 
+import { useStickyState } from '../../hooks/useStickyState'
 import { currentUserIsOwner, fireBaseQuery, listSubCollections, createSubCollection } from '../../shared/utilities'
 
 const LinkPage = ( { match } ) => {
 
-    const [ linkPage, setLinkPage ] = useState( [] )
+    // const [ linkPage, setLinkPage ] = useState( [] )
+    const [ linkPage, setLinkPage ] = useStickyState( [], 'lp-' + match.params.groupslug )
 
-    const [ linkPageSubCollections, setLinkPageSubCollections ] = useState ( [] )
+    // const [ linkPageSubCollections, setLinkPageSubCollections ] = useState ( [] )
+    const [ linkPageSubCollections, setLinkPageSubCollections ] = useStickyState( [], 'lp-sc-' + match.params.groupslug )
 
     const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
 
     const [ _count, forceUpdate ] = useReducer(x => x + 1, 0);
-
-    console.log( _count );
 
     // Get the details of the current quicklinks page
     useEffect( () => {
         fireBaseQuery( 'linkgroups', 'slug', match.params.groupslug, setLinkPage )
 
         return () => {
-            console.log( 'cleanup' )
+            console.log( 'cleanup linkPage' )
         }
     }, [] );
 
@@ -31,7 +32,7 @@ const LinkPage = ( { match } ) => {
     useEffect( () => {
         linkPage.length ? listSubCollections( 'linkgroups', linkPage[0].id, setLinkPageSubCollections ) : [];
         return () => {
-            console.log( 'cleanup' )
+            console.log( 'cleanup linkPage' )
         }
     }, [ linkPage, _count ] )
 
