@@ -41,8 +41,8 @@ const Layout = () => {
                         </button>
                     </nav>
                     <Switch>
-                        <Route path='/' exact component={ CreateLinkGroup } />
-                        <Route path='/create' exact component={ CreateLinkGroup } />
+                        <Route exact path='/' component={ CreateLinkGroup } />
+                        <Route exact path='/create' component={ CreateLinkGroup } />
                         <Route path='/:groupslug' component={ LinkPage } />
                     </Switch>
                 </Fragment>

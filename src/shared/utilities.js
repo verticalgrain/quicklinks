@@ -97,6 +97,27 @@ export const updateLinkPage = ( linkPageId, dataNew ) => {
     db.collection( 'linkgroups' ).doc( linkPageId ).set( dataNew );
 }
 
+/**
+ * Delete a link from a link group object.
+ *
+ * @param {Object}      dataCurrent     Object of data to overwrite link group object with.
+ * @param {String}      href            The href of the link to be deleted.
+ *
+ * @returns {Object}
+ */
+export const deleteLink = ( dataCurrent, href ) => {
+    let dataNew = dataCurrent;
+    let links = dataCurrent.links;
+
+    const linksNew = links.filter( function( linkItem ) {
+        return linkItem.href !== href;
+    });
+
+    dataNew.links = linksNew;
+
+    updateLinkGroup( dataCurrent.parentLinkPageId, dataCurrent.parentLinkGroupId, dataCurrent.id, dataNew )
+}
+
 
 
 ///////////////////////// OLD STUFF PROBS DELETEs //////////////////////////

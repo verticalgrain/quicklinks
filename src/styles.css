@@ -212,9 +212,21 @@ main.main {
     }
 }
 
+.grid__placeholder {
+    display: flex;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    position: relative;
+    overflow: hidden;
+}
+
 .grid__item {
     width: 153px;
     margin: 0 40px 40px 0;
+}
+
+.grid__item--empty {
+    border: 1px dashed rgba( 0, 0, 0, 0.1 );
 }
 
 .grid.grid--collapsed .grid__item {

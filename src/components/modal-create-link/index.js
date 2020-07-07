@@ -1,11 +1,8 @@
-import React, { Fragment, useContext, useState } from 'react';
+import React, { Fragment } from 'react';
 
-import { AppContextNonPersisted } from '../../contextNonPersisted'
 import FormLink from '../form-link/index'
 
 const ModalCreateLink = ( { modalState, setModalState, linkPageId, linkGroupUid, linkGroupSubCollectionId, groupData } ) => {
-
-    const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
 
     return (
         <Fragment>

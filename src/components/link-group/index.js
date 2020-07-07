@@ -6,17 +6,15 @@ import Link from '../link/index'
 import ModalCreateLink from '../modal-create-link/index'
 import { AppContextPersisted } from '../../contextPersisted'
 import { AppContextNonPersisted } from '../../contextNonPersisted'
-import { currentUserIsOwner } from '../../shared/utilities'
+import { currentUserIsOwner, deleteLink } from '../../shared/utilities'
 import { useStickyState } from '../../hooks/useStickyState'
 
 const LinkGroup = ( { linkPage, subCollectionId } ) => {
 
-    // const [ groupData, setGroupData ] = useState( {} )
     const [ groupData, setGroupData ] = useStickyState( {}, 'lg-' + subCollectionId )
 
     const [ modalState, setModalState ] = useState( false );
 
-    console.log( groupData );
     const [ groupVisibility, setGroupVisibility ] = useState( true )
 
     const { appStatePersisted, setAppStatePersisted } = useContext( AppContextPersisted )
@@ -41,15 +39,9 @@ const LinkGroup = ( { linkPage, subCollectionId } ) => {
         }
     }, [] );
 
-    const deleteLink = id => {
-        console.log( id )
-        db.collection( 'linkgroups' ).doc( linkPage.id ).collection( subCollectionId )
-        .doc(id)
-        .delete();
+    const deleteLinkLocal = href => {
+        deleteLink( groupData, href );
     }
-
-    // Show the modalCreateLink component if user is authenticated and the group owner
-    const showModalCreateLink = currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkPage.uid );
 
     return (
         <Fragment>
@@ -57,21 +49,22 @@ const LinkGroup = ( { linkPage, subCollectionId } ) => {
                 { groupData && <EditableText className="grid__title" text={ groupData.title } linkPage={ linkPage } linkGroup={ groupData } editableTextContext='linkGroupTitle' /> }
                 <div className={ 'grid ' + groupVisibilityClass }>
                     <Fragment>
-                        { Object.keys( groupData ).length && groupData.links.length ? groupData.links.map( link => {
-                            console.log( link );
+                        { !!Object.keys( groupData ).length && !!groupData.links.length ? groupData.links.map( link => {
                             return (
                             <div className="grid__item" key={ 'grid__item-' + link.title }>
-                                <Link href={ link.href } id={ link.id } title={ link.title } authenticated={ authenticated } linkTargetBlank={ appStatePersisted.linkTargetBlank } deleteLink={ deleteLink } />
+                                <Link href={ link.href } title={ link.title } authenticated={ authenticated } linkTargetBlank={ appStatePersisted.linkTargetBlank } deleteLink={ deleteLinkLocal } />
                             </div>
                         ) } )
                         : <div className="grid__item grid__item--full u-centered">&nbsp;</div>
                         }
-                        <div className="grid__item grid__item--plus">
-                            <div className="card card--plus" onClick={ () => setModalState( ! modalState ) }>
-                                <div className="card__plus"><span>+</span> Add New </div>
+                        { authenticated &&
+                            <div className="grid__item grid__item--plus">
+                                <div className="card card--plus" onClick={ () => setModalState( ! modalState ) }>
+                                    <div className="card__plus"><span>+</span> Add New </div>
+                                </div>
                             </div>
-                        </div>
-                        { showModalCreateLink && modalState && <ModalCreateLink modalState={ modalState } setModalState={ setModalState } linkGroupUid={ linkPage.uid } linkPageId={ linkPage.id } linkGroupSubCollectionId={ subCollectionId } groupData={ groupData } /> }
+                        }
+                        { authenticated && modalState && <ModalCreateLink modalState={ modalState } setModalState={ setModalState } linkGroupUid={ linkPage.uid } linkPageId={ linkPage.id } linkGroupSubCollectionId={ subCollectionId } groupData={ groupData } /> }
                     </Fragment>
                 </div>
                 <div className="grid__collapse-expand" onClick={ () => setGroupVisibility( ! groupVisibility ) }>

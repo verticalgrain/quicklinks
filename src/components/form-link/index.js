@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { db } from '../../firebase'
 import { updateLinkGroup } from '../../shared/utilities'
 
 const FormLink = ( { linkPageId, linkGroupSubCollectionId, groupData, callBack } ) => {
@@ -24,6 +23,7 @@ const FormLink = ( { linkPageId, linkGroupSubCollectionId, groupData, callBack }
     // If it doesn't exist yet, add a dummy
     // When form is submitted,
     // Add the link and title to the end of the array of links
+    // TODO: Add this function to utilities
     const handleSubmit = e => {
         e.preventDefault();
         const groupDataNew = groupData;
