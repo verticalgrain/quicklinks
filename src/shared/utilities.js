@@ -37,15 +37,22 @@ export const currentUserIsOwner = ( authenticated, uid, groupUid ) => {
     return authenticated && uid === groupUid;
 }
 
+const returnSomething = ( thing ) => {
+    return thing;
+}
+
 // List sub collections of a collection using getSubCollections function
 export const listSubCollections = ( collection, document, stateFunction ) => {
     const getSubCollections = firebase
         .functions()
-        .httpsCallable(  'getSubCollections' );
+        .httpsCallable( 'getSubCollections' );
 
-    getSubCollections( { docPath: collection + '/' + document } )
-    .then(function(result) {
+    const subCollections = getSubCollections( { docPath: collection + '/' + document } )
+    .then( function( result ) {
+        // resolve();
         stateFunction( result.data.collections )
+        // return result.data.collections
+        // returnSomething( result.data.collections )
     })
     .catch(function(error) {
         // Getting the Error details.
@@ -54,6 +61,8 @@ export const listSubCollections = ( collection, document, stateFunction ) => {
         var details = error.details;
         console.log( message )
     });
+
+    return subCollections
 }
 
 // Create a new subCollection
@@ -118,6 +127,14 @@ export const deleteLink = ( dataCurrent, href ) => {
     updateLinkGroup( dataCurrent.parentLinkPageId, dataCurrent.parentLinkGroupId, dataCurrent.id, dataNew )
 }
 
+
+export const reorder = ( list, startIndex, endIndex ) => {
+    const result = Array.from( list );
+    const [ removed ] = result.splice( startIndex, 1 );
+    result.splice( endIndex, 0, removed );
+
+    return result;
+};
 
 
 ///////////////////////// OLD STUFF PROBS DELETEs //////////////////////////

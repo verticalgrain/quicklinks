@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react'
 
-import FormLinkGroup from '../../components/form-link-group/index'
+import FormLinkPage from '../../components/form-link-page/index'
 
-const CreateLinkGroup = () => {
+const CreateLinkPage = () => {
     return (
         <Fragment>
             <main className="main">
@@ -10,7 +10,7 @@ const CreateLinkGroup = () => {
                     <div className="u-centered">
                         <h1>Create a Quicklinks page</h1>
                     </div>
-                    <FormLinkGroup />
+                    <FormLinkPage />
                 </div>
             </main>
             <footer></footer>
@@ -18,4 +18,4 @@ const CreateLinkGroup = () => {
     )
 }
 
-export default CreateLinkGroup;
+export default CreateLinkPage;

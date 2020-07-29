@@ -1,18 +1,17 @@
 import React, { Fragment, useContext, useEffect, useState, useReducer } from 'react'
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 
 import { AppContextNonPersisted } from '../../contextNonPersisted'
 import EditableText from '../../components/editable-text/index'
 import LinkGroup from '../../components/link-group/index'
 
 import { useStickyState } from '../../hooks/useStickyState'
-import { currentUserIsOwner, fireBaseQuery, listSubCollections, createSubCollection } from '../../shared/utilities'
+import { currentUserIsOwner, fireBaseQuery, listSubCollections, createSubCollection, reorder } from '../../shared/utilities'
 
 const LinkPage = ( { match } ) => {
 
-    // const [ linkPage, setLinkPage ] = useState( [] )
     const [ linkPage, setLinkPage ] = useStickyState( [], 'lp-' + match.params.groupslug )
 
-    // const [ linkPageSubCollections, setLinkPageSubCollections ] = useState ( [] )
     const [ linkPageSubCollections, setLinkPageSubCollections ] = useStickyState( [], 'lp-sc-' + match.params.groupslug )
 
     const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
@@ -30,7 +29,19 @@ const LinkPage = ( { match } ) => {
 
     // Get the subcollections of links for the current quicklinks page
     useEffect( () => {
-        linkPage.length ? listSubCollections( 'linkgroups', linkPage[0].id, setLinkPageSubCollections ) : [];
+        // wtf are we trying to do here
+        // get the array of subcollection IDs
+        if ( linkPage.length ) {
+            // Call the firebase function to get sub collections and set linkPageSubCollections 
+            listSubCollections( 'linkgroups', linkPage[0].id, setLinkPageSubCollections );
+        }
+        // Get the page field array of ids for ordering
+        // re-order the array of subcollection IDs based on the array of ids for ordering
+        // set the linkpagesubcollections with the new array of subcollection ids with this:
+        ////array1: array of elements to be sorted
+        //array2: array with the indexes
+        // array1 = array2.map((object, i) => array1[object]);
+
         return () => {
             console.log( 'cleanup linkPage' )
         }
@@ -42,6 +53,26 @@ const LinkPage = ( { match } ) => {
 
     const createNewSubCollection = ( linkPageId ) => {
         createSubCollection( linkPageId, forceUpdate );
+    }
+
+    function onDragEnd( result ) {
+        if ( !result.destination ) {
+            return;
+        }
+
+        if ( result.destination.index === result.source.index ) {
+            return;
+        }
+
+        const items = reorder(
+            linkPageSubCollections,
+            result.source.index,
+            result.destination.index
+        );
+
+        console.log( items )
+
+        setLinkPageSubCollections( items );
     }
 
     return (
@@ -62,13 +93,22 @@ const LinkPage = ( { match } ) => {
                     </div>
                     <div className="linkpage__col2 color--col2">
                         <div className="linkpage__links">
-                            { linkPage.length ?
-                                linkPageSubCollections && linkPageSubCollections.map( ( subCollection, index ) => (
-                                    <LinkGroup key={ index + subCollection  } linkPage={ linkPage[ 0 ] } subCollectionId={ subCollection } />
-                                ))
-                            :
-                                <div>Ooops, the group does not seem to exist.</div>
-                            }
+                            <DragDropContext onDragEnd={ onDragEnd }>
+                                <Droppable droppableId="droppableLinkPage">
+                                    { provided => (
+                                        <div ref={ provided.innerRef } { ...provided.droppableProps }>
+                                            { linkPage.length ?
+                                                linkPageSubCollections && linkPageSubCollections.map( ( subCollection, index ) => (
+                                                    <LinkGroup key={ index + subCollection  } linkPage={ linkPage[ 0 ] } subCollectionId={ subCollection } index={ index } />
+                                                ))
+                                            :
+                                                <div>Ooops, the group does not seem to exist.</div>
+                                            }
+                                            { provided.placeholder }
+                                        </div>
+                                    )}
+                                </Droppable>
+                            </DragDropContext>
                         </div>
                     </div>
                 </div>

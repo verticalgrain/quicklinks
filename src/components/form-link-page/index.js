@@ -7,7 +7,7 @@ import { db } from '../../firebase'
 import firebase from 'firebase';
 import { convertSpinalCase, createSubCollection } from '../../shared/utilities'
 
-const FormLink = withRouter( ( { history, ...props } ) => {
+const FormLinkPage = withRouter( ( { history, ...props } ) => {
     const [ linkgroup, setLinkgroup ] = useState( {
         name: '',
         slug: '',
@@ -206,4 +206,4 @@ const FormLink = withRouter( ( { history, ...props } ) => {
 
 } )
 
-export default FormLink;
+export default FormLinkPage;
