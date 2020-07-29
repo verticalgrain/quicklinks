@@ -20,7 +20,7 @@ const LinkPage = ( { match } ) => {
 
     // Get the details of the current quicklinks page
     useEffect( () => {
-        fireBaseQuery( 'linkgroups', 'slug', match.params.groupslug, setLinkPage )
+        fireBaseQuery( 'linkpages', 'slug', match.params.groupslug, setLinkPage )
 
         return () => {
             console.log( 'cleanup linkPage' )
@@ -33,7 +33,7 @@ const LinkPage = ( { match } ) => {
         // get the array of subcollection IDs
         if ( linkPage.length ) {
             // Call the firebase function to get sub collections and set linkPageSubCollections 
-            listSubCollections( 'linkgroups', linkPage[0].id, setLinkPageSubCollections );
+            listSubCollections( 'linkpages', linkPage[0].id, setLinkPageSubCollections );
         }
         // Get the page field array of ids for ordering
         // re-order the array of subcollection IDs based on the array of ids for ordering
@@ -73,6 +73,10 @@ const LinkPage = ( { match } ) => {
         console.log( items )
 
         setLinkPageSubCollections( items );
+
+        // When the user drags the items,
+        // Update the ordered array of link group IDs with items
+
     }
 
     return (
@@ -114,7 +118,7 @@ const LinkPage = ( { match } ) => {
                 </div>
                 { isAuthOwner &&
                     <div className="button__wrapper button__wrapper--bigred">
-                        <div className="button button--bigred" onClick={ () => createNewSubCollection( linkPage[ 0 ].id ) }>+</div>
+                        <div className="button button--bigred" onClick={ () => createNewSubCollection( linkPage[ 0 ] ) }>+</div>
                     </div>
                 }
             </div>

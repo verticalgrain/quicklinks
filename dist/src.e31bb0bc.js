@@ -108188,7 +108188,7 @@ module.exports = firebase;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.fireBaseGetLinkgroups = exports.fireBaseGet = exports.fireBaseSnapshotDocument = exports.fireBaseGet1 = exports.reorder = exports.deleteLink = exports.updateLinkPage = exports.updateLinkGroup = exports.createSubCollection = exports.listSubCollections = exports.currentUserIsOwner = exports.fireBaseQuery = exports.convertSpinalCase = exports.generateUniqueId = void 0;
+exports.fireBaseGetLinkgroups = exports.fireBaseGet = exports.fireBaseSnapshotDocument = exports.fireBaseGet1 = exports.reorder = exports.deleteLink = exports.createSubCollection = exports.updateLinkPage = exports.updateLinkGroup = exports.listSubCollections = exports.currentUserIsOwner = exports.fireBaseQuery = exports.convertSpinalCase = exports.generateUniqueId = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -108284,23 +108284,6 @@ var listSubCollections = function listSubCollections(collection, document, state
     console.log(message);
   });
   return subCollections;
-}; // Create a new subCollection
-
-
-exports.listSubCollections = listSubCollections;
-
-var createSubCollection = function createSubCollection(linkPageId, callback) {
-  var collectionId = generateUniqueId();
-  var subCollection = {
-    parentLinkGroupId: collectionId,
-    parentLinkPageId: linkPageId,
-    title: 'Untitled link group',
-    links: []
-  };
-
-  _firebase.db.collection('linkgroups').doc(linkPageId).collection(collectionId).add(subCollection).then(function () {
-    return callback();
-  });
 };
 /**
  * Update a link group object.
@@ -108314,10 +108297,10 @@ var createSubCollection = function createSubCollection(linkPageId, callback) {
  */
 
 
-exports.createSubCollection = createSubCollection;
+exports.listSubCollections = listSubCollections;
 
 var updateLinkGroup = function updateLinkGroup(linkPageId, linkGroupId, linkGroupDocId, dataNew) {
-  _firebase.db.collection('linkgroups').doc(linkPageId).collection(linkGroupId).doc(linkGroupDocId).set(dataNew);
+  _firebase.db.collection('linkpages').doc(linkPageId).collection(linkGroupId).doc(linkGroupDocId).set(dataNew);
 };
 /**
  * Update a link page object.
@@ -108332,7 +108315,40 @@ var updateLinkGroup = function updateLinkGroup(linkPageId, linkGroupId, linkGrou
 exports.updateLinkGroup = updateLinkGroup;
 
 var updateLinkPage = function updateLinkPage(linkPageId, dataNew) {
-  _firebase.db.collection('linkgroups').doc(linkPageId).set(dataNew);
+  _firebase.db.collection('linkpages').doc(linkPageId).set(dataNew);
+};
+/**
+ * Create a new linkGroup subCollection.
+ *
+ * @param {Object}      linkPageData         Object of data to overwrite link group object with
+ * @param {}            callback             The callback to be executed once finished
+ *
+ * @returns {Object}
+ */
+
+
+exports.updateLinkPage = updateLinkPage;
+
+var createSubCollection = function createSubCollection(linkPageData, callback) {
+  // Create unique collectionId
+  var collectionId = generateUniqueId(); // Create linkGroup object
+
+  var subCollection = {
+    parentLinkGroupId: collectionId,
+    parentLinkPageId: linkPageData.id,
+    title: 'Untitled link group',
+    links: []
+  }; // Add the ID of the new linkGroup subcollection to the beginning of the linkPage linkGroupIds array
+
+  var linkPageGroupIds = linkPageData.linkGroupIds;
+  linkPageGroupIds.unshift(collectionId);
+  linkPageData.linkGroupIds = linkPageGroupIds; // Update the linkPage array of linkGroupIds
+
+  updateLinkPage(linkPageData.id, linkPageData); // Add the linkGroup to the linkPage
+
+  _firebase.db.collection('linkpages').doc(linkPageData.id).collection(collectionId).add(subCollection).then(function () {
+    return callback();
+  });
 };
 /**
  * Delete a link from a link group object.
@@ -108344,7 +108360,7 @@ var updateLinkPage = function updateLinkPage(linkPageId, dataNew) {
  */
 
 
-exports.updateLinkPage = updateLinkPage;
+exports.createSubCollection = createSubCollection;
 
 var deleteLink = function deleteLink(dataCurrent, href) {
   var dataNew = dataCurrent;
@@ -108396,7 +108412,7 @@ var fireBaseSnapshotDocument = function fireBaseSnapshotDocument(collection, doc
 exports.fireBaseSnapshotDocument = fireBaseSnapshotDocument;
 
 var fireBaseGet = function fireBaseGet() {
-  var docRef = _firebase.db.collection('linkgroups').doc('f868hk34ED1o211LyjPa');
+  var docRef = _firebase.db.collection('linkpages').doc('f868hk34ED1o211LyjPa');
 
   docRef.get().then(function (doc) {
     if (doc.exists) {
@@ -108411,7 +108427,7 @@ var fireBaseGet = function fireBaseGet() {
 
 exports.fireBaseGet = fireBaseGet;
 
-var fireBaseGetLinkgroups = _firebase.db.collection('linkgroups').onSnapshot(function (snapshot) {
+var fireBaseGetLinkgroups = _firebase.db.collection('linkpages').onSnapshot(function (snapshot) {
   return snapshot.docs.map(function (doc) {
     return _objectSpread({
       id: doc.id
@@ -108480,7 +108496,8 @@ var FormLinkPage = (0, _reactRouterDom.withRouter)(function (_ref) {
   var _useState = (0, _react.useState)({
     name: '',
     slug: '',
-    uid: ''
+    uid: '',
+    linkGroupIds: []
   }),
       _useState2 = _slicedToArray(_useState, 2),
       linkgroup = _useState2[0],
@@ -108509,11 +108526,14 @@ var FormLinkPage = (0, _reactRouterDom.withRouter)(function (_ref) {
   // If it doesn't, create the new collection
 
 
-  var createLinkgroupCollection = function createLinkgroupCollection(linkgroupCandidate) {
-    _firebase.db.collection('linkgroups').where('slug', '==', linkgroupCandidate.slug).get().then(function (querySnapshot) {
+  var createLinkgroupCollection = function createLinkgroupCollection(linkPageCandidate) {
+    _firebase.db.collection('linkpages').where('slug', '==', linkPageCandidate.slug).get().then(function (querySnapshot) {
       if (querySnapshot.docs.length === 0) {
-        _firebase.db.collection('linkgroups').add(linkgroupCandidate).then(function (response) {
-          (0, _utilities.createSubCollection)(response.id);
+        _firebase.db.collection('linkpages').add(linkPageCandidate).then(function (response) {
+          // Add the linkPageId to the linkPageCandidate object
+          linkPageCandidate.id = response.id; // Create the first subCollection for the new linkPage
+
+          (0, _utilities.createSubCollection)(linkPageCandidate);
         }).then(function (response) {
           setLinkgroupCreationStatus({
             success: true,
@@ -108521,7 +108541,7 @@ var FormLinkPage = (0, _reactRouterDom.withRouter)(function (_ref) {
           });
           setTimeout(function () {
             // Redirect user to the new linkGroup page
-            history.push('/' + linkgroupCandidate.slug);
+            history.push('/' + linkPageCandidate.slug);
           }, 1000);
         }).catch(function (error) {
           console.error('Error writing document: ', error);
@@ -108551,7 +108571,8 @@ var FormLinkPage = (0, _reactRouterDom.withRouter)(function (_ref) {
         setLinkgroup({
           name: '',
           slug: '',
-          uid: user.uid
+          uid: user.uid,
+          linkGroupIds: []
         });
         setIsSignedIn(true);
       } else if (user && authFormInitiated) {
@@ -108559,20 +108580,23 @@ var FormLinkPage = (0, _reactRouterDom.withRouter)(function (_ref) {
         setLinkgroup({
           name: linkgroup.name,
           slug: linkgroup.slug,
-          uid: user.uid
+          uid: user.uid,
+          linkGroupIds: []
         });
         setIsSignedIn(true);
         createLinkgroupCollection({
           name: linkgroup.name,
           slug: linkgroup.slug,
-          uid: user.uid
+          uid: user.uid,
+          linkGroupIds: []
         });
       } else if (!user && authFormInitiated) {
         // User is not authenticated yet but login button has been clicked
         setLinkgroup({
           name: linkgroup.name,
           slug: linkgroup.slug,
-          uid: linkgroup.uid
+          uid: linkgroup.uid,
+          linkGroupIds: []
         });
         setIsSignedIn(false);
       } else {
@@ -108580,7 +108604,8 @@ var FormLinkPage = (0, _reactRouterDom.withRouter)(function (_ref) {
         setLinkgroup({
           name: '',
           slug: '',
-          uid: ''
+          uid: '',
+          linkGroupIds: []
         });
         setIsSignedIn(false);
       }
@@ -108636,7 +108661,8 @@ var FormLinkPage = (0, _reactRouterDom.withRouter)(function (_ref) {
     setLinkgroup({
       name: e.target.value,
       slug: (0, _utilities.convertSpinalCase)(e.target.value),
-      uid: linkgroup.uid
+      uid: linkgroup.uid,
+      linkGroupIds: []
     });
   };
 
@@ -120604,7 +120630,7 @@ var LinkGroup = function LinkGroup(_ref) {
   var authenticated = (0, _utilities.currentUserIsOwner)(appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkPage.uid);
   var groupVisibilityClass = groupVisibility ? '' : 'grid--collapsed';
   (0, _react.useEffect)(function () {
-    var unsub = _firebase.db.collection('linkgroups').doc(linkPage.id).collection(subCollectionId).onSnapshot(function (snapshot) {
+    var unsub = _firebase.db.collection('linkpages').doc(linkPage.id).collection(subCollectionId).onSnapshot(function (snapshot) {
       var subCollection = snapshot.docs.map(function (doc) {
         return _objectSpread({
           id: doc.id
@@ -120757,7 +120783,7 @@ var LinkPage = function LinkPage(_ref) {
 
 
   (0, _react.useEffect)(function () {
-    (0, _utilities.fireBaseQuery)('linkgroups', 'slug', match.params.groupslug, setLinkPage);
+    (0, _utilities.fireBaseQuery)('linkpages', 'slug', match.params.groupslug, setLinkPage);
     return function () {
       console.log('cleanup linkPage');
     };
@@ -120768,7 +120794,7 @@ var LinkPage = function LinkPage(_ref) {
     // get the array of subcollection IDs
     if (linkPage.length) {
       // Call the firebase function to get sub collections and set linkPageSubCollections 
-      (0, _utilities.listSubCollections)('linkgroups', linkPage[0].id, setLinkPageSubCollections);
+      (0, _utilities.listSubCollections)('linkpages', linkPage[0].id, setLinkPageSubCollections);
     } // Get the page field array of ids for ordering
     // re-order the array of subcollection IDs based on the array of ids for ordering
     // set the linkpagesubcollections with the new array of subcollection ids with this:
@@ -120799,7 +120825,8 @@ var LinkPage = function LinkPage(_ref) {
 
     var items = (0, _utilities.reorder)(linkPageSubCollections, result.source.index, result.destination.index);
     console.log(items);
-    setLinkPageSubCollections(items);
+    setLinkPageSubCollections(items); // When the user drags the items,
+    // Update the ordered array of link group IDs with items
   }
 
   return /*#__PURE__*/_react.default.createElement("main", {
@@ -120844,7 +120871,7 @@ var LinkPage = function LinkPage(_ref) {
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "button button--bigred",
     onClick: function onClick() {
-      return createNewSubCollection(linkPage[0].id);
+      return createNewSubCollection(linkPage[0]);
     }
   }, "+"))));
 };

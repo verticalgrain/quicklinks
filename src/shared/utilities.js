@@ -65,21 +65,6 @@ export const listSubCollections = ( collection, document, stateFunction ) => {
     return subCollections
 }
 
-// Create a new subCollection
-export const createSubCollection = ( linkPageId, callback ) => {
-    const collectionId = generateUniqueId();
-    const subCollection = {
-        parentLinkGroupId: collectionId,
-        parentLinkPageId: linkPageId,
-        title: 'Untitled link group',
-        links: [],
-    }
-    db.collection( 'linkgroups' ).doc( linkPageId ).collection( collectionId ).add( subCollection )
-    .then( function() {
-        return callback()
-    } )
-}
-
 /**
  * Update a link group object.
  *
@@ -91,7 +76,7 @@ export const createSubCollection = ( linkPageId, callback ) => {
  * @returns {Object}
  */
 export const updateLinkGroup = ( linkPageId, linkGroupId, linkGroupDocId, dataNew ) => {
-    db.collection( 'linkgroups' ).doc( linkPageId ).collection( linkGroupId ).doc( linkGroupDocId ).set( dataNew );
+    db.collection( 'linkpages' ).doc( linkPageId ).collection( linkGroupId ).doc( linkGroupDocId ).set( dataNew );
 }
 
 /**
@@ -103,7 +88,38 @@ export const updateLinkGroup = ( linkPageId, linkGroupId, linkGroupDocId, dataNe
  * @returns {Object}
  */
 export const updateLinkPage = ( linkPageId, dataNew ) => {
-    db.collection( 'linkgroups' ).doc( linkPageId ).set( dataNew );
+    db.collection( 'linkpages' ).doc( linkPageId ).set( dataNew );
+}
+
+/**
+ * Create a new linkGroup subCollection.
+ *
+ * @param {Object}      linkPageData         Object of data to overwrite link group object with
+ * @param {}            callback             The callback to be executed once finished
+ *
+ * @returns {Object}
+ */
+export const createSubCollection = ( linkPageData, callback ) => {
+    // Create unique collectionId
+    const collectionId = generateUniqueId();
+    // Create linkGroup object
+    const subCollection = {
+        parentLinkGroupId: collectionId,
+        parentLinkPageId: linkPageData.id,
+        title: 'Untitled link group',
+        links: [],
+    }
+    // Add the ID of the new linkGroup subcollection to the beginning of the linkPage linkGroupIds array
+    let linkPageGroupIds = linkPageData.linkGroupIds
+    linkPageGroupIds.unshift( collectionId )
+    linkPageData.linkGroupIds = linkPageGroupIds
+    // Update the linkPage array of linkGroupIds
+    updateLinkPage( linkPageData.id, linkPageData )
+    // Add the linkGroup to the linkPage
+    db.collection( 'linkpages' ).doc( linkPageData.id ).collection( collectionId ).add( subCollection )
+    .then( function() {
+        return callback()
+    } )
 }
 
 /**
@@ -161,7 +177,7 @@ export const fireBaseSnapshotDocument = ( collection, document ) => {
 }
 
 export const fireBaseGet = () => {
-    const docRef = db.collection( 'linkgroups' ).doc( 'f868hk34ED1o211LyjPa' );
+    const docRef = db.collection( 'linkpages' ).doc( 'f868hk34ED1o211LyjPa' );
 
     docRef.get().then( doc => {
         if ( doc.exists ) {
@@ -174,7 +190,7 @@ export const fireBaseGet = () => {
     });
 }
 
-export const fireBaseGetLinkgroups = db.collection( 'linkgroups' ).onSnapshot( snapshot => {
+export const fireBaseGetLinkgroups = db.collection( 'linkpages' ).onSnapshot( snapshot => {
     return snapshot.docs.map( doc => ( {
         id: doc.id,
         ...doc.data()

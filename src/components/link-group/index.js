@@ -27,7 +27,7 @@ const LinkGroup = ( { linkPage, subCollectionId, index } ) => {
     const groupVisibilityClass = groupVisibility ? '' : 'grid--collapsed';
 
     useEffect( () => {
-        const unsub = db.collection( 'linkgroups' ).doc( linkPage.id ).collection( subCollectionId ).onSnapshot( snapshot => {
+        const unsub = db.collection( 'linkpages' ).doc( linkPage.id ).collection( subCollectionId ).onSnapshot( snapshot => {
             const subCollection = snapshot.docs.map( doc => ( {
                 id: doc.id,
                 ...doc.data()
