@@ -1,7 +1,7 @@
 import React, { Fragment, useContext, useState } from 'react'
 import { Link, Router, Route, Switch } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
-import CreateLinkGroup from '../create-link-group/index'
+import CreateLinkPage from '../create-link-page/index'
 import LinkPage from '../link-page/index'
 import Sidebar from '../../components/sidebar/index'
 import { CSSTransition } from 'react-transition-group'
@@ -41,8 +41,8 @@ const Layout = () => {
                         </button>
                     </nav>
                     <Switch>
-                        <Route exact path='/' component={ CreateLinkGroup } />
-                        <Route exact path='/create' component={ CreateLinkGroup } />
+                        <Route exact path='/' component={ CreateLinkPage } />
+                        <Route exact path='/create' component={ CreateLinkPage } />
                         <Route path='/:groupslug' component={ LinkPage } />
                     </Switch>
                 </Fragment>

@@ -23,6 +23,7 @@
     "firebase-functions": "^3.6.0",
     "firebase-tools": "^8.0.0",
     "react": "^16.8.0",
+    "react-beautiful-dnd": "^13.0.0",
     "react-dom": "^16.13.0",
     "react-firebaseui": "^4.1.0",
     "react-router-dom": "^5.1.2",

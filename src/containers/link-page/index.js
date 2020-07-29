@@ -1,18 +1,17 @@
-import React, { Fragment, useContext, useEffect, useState, useReducer } from 'react'
+import React, { useContext, useEffect, useReducer } from 'react'
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 
 import { AppContextNonPersisted } from '../../contextNonPersisted'
 import EditableText from '../../components/editable-text/index'
 import LinkGroup from '../../components/link-group/index'
 
 import { useStickyState } from '../../hooks/useStickyState'
-import { currentUserIsOwner, fireBaseQuery, listSubCollections, createSubCollection } from '../../shared/utilities'
+import { createSubCollection, currentUserIsOwner, fireBaseQuery, updateLinkPage, reorder } from '../../shared/utilities'
 
 const LinkPage = ( { match } ) => {
 
-    // const [ linkPage, setLinkPage ] = useState( [] )
     const [ linkPage, setLinkPage ] = useStickyState( [], 'lp-' + match.params.groupslug )
 
-    // const [ linkPageSubCollections, setLinkPageSubCollections ] = useState ( [] )
     const [ linkPageSubCollections, setLinkPageSubCollections ] = useStickyState( [], 'lp-sc-' + match.params.groupslug )
 
     const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
@@ -21,7 +20,7 @@ const LinkPage = ( { match } ) => {
 
     // Get the details of the current quicklinks page
     useEffect( () => {
-        fireBaseQuery( 'linkgroups', 'slug', match.params.groupslug, setLinkPage )
+        fireBaseQuery( 'linkpages', 'slug', match.params.groupslug, setLinkPage )
 
         return () => {
             console.log( 'cleanup linkPage' )
@@ -30,7 +29,22 @@ const LinkPage = ( { match } ) => {
 
     // Get the subcollections of links for the current quicklinks page
     useEffect( () => {
-        linkPage.length ? listSubCollections( 'linkgroups', linkPage[0].id, setLinkPageSubCollections ) : [];
+        // get the array of subcollection IDs
+        if ( linkPage.length ) {
+            // ORIGINAL WAY:
+            // Call the firebase function to get sub collections and set linkPageSubCollections
+            // listSubCollections( 'linkpages', linkPage[0].id, setLinkPageSubCollections );
+            // NEW WAY:
+            console.log( linkPage[ 0 ] )
+            setLinkPageSubCollections( linkPage[ 0 ].linkGroupIds )
+        }
+        // Get the page field array of ids for ordering
+        // re-order the array of subcollection IDs based on the array of ids for ordering
+        // set the linkpagesubcollections with the new array of subcollection ids with this:
+        ////array1: array of elements to be sorted
+        //array2: array with the indexes
+        // array1 = array2.map((object, i) => array1[object]);
+
         return () => {
             console.log( 'cleanup linkPage' )
         }
@@ -42,6 +56,30 @@ const LinkPage = ( { match } ) => {
 
     const createNewSubCollection = ( linkPageId ) => {
         createSubCollection( linkPageId, forceUpdate );
+    }
+
+    function onDragEnd( result ) {
+        if ( !result.destination ) {
+            return;
+        }
+
+        if ( result.destination.index === result.source.index ) {
+            return;
+        }
+
+        const linkGroupIdsNewOrder = reorder(
+            linkPageSubCollections,
+            result.source.index,
+            result.destination.index
+        );
+
+        // Update the local state with the new linkGroupIds order
+        setLinkPageSubCollections( linkGroupIdsNewOrder );
+
+        // Update fireStore with the new linkGroupIds order
+        const linkPageNew = linkPage[ 0 ]
+        linkPageNew.linkGroupIds = linkGroupIdsNewOrder
+        updateLinkPage( linkPage[ 0 ].id, linkPageNew )
     }
 
     return (
@@ -62,19 +100,28 @@ const LinkPage = ( { match } ) => {
                     </div>
                     <div className="linkpage__col2 color--col2">
                         <div className="linkpage__links">
-                            { linkPage.length ?
-                                linkPageSubCollections && linkPageSubCollections.map( ( subCollection, index ) => (
-                                    <LinkGroup key={ index + subCollection  } linkPage={ linkPage[ 0 ] } subCollectionId={ subCollection } />
-                                ))
-                            :
-                                <div>Ooops, the group does not seem to exist.</div>
-                            }
+                            <DragDropContext onDragEnd={ onDragEnd }>
+                                <Droppable droppableId="droppableLinkPage">
+                                    { provided => (
+                                        <div ref={ provided.innerRef } { ...provided.droppableProps }>
+                                            { linkPage.length ?
+                                                linkPageSubCollections && linkPageSubCollections.map( ( subCollection, index ) => (
+                                                    <LinkGroup key={ index + subCollection  } linkPage={ linkPage[ 0 ] } subCollectionId={ subCollection } index={ index } />
+                                                ))
+                                            :
+                                                <div>Ooops, the group does not seem to exist.</div>
+                                            }
+                                            { provided.placeholder }
+                                        </div>
+                                    )}
+                                </Droppable>
+                            </DragDropContext>
                         </div>
                     </div>
                 </div>
                 { isAuthOwner &&
                     <div className="button__wrapper button__wrapper--bigred">
-                        <div className="button button--bigred" onClick={ () => createNewSubCollection( linkPage[ 0 ].id ) }>+</div>
+                        <div className="button button--bigred" onClick={ () => createNewSubCollection( linkPage[ 0 ] ) }>+</div>
                     </div>
                 }
             </div>

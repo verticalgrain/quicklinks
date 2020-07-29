@@ -20,7 +20,7 @@ const ListLinks = ( { linkGroupId, linkGroupUid, subCollectionId } ) => {
     const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
 
     useEffect( () => {
-        const unsub = db.collection( 'linkgroups' ).doc( linkGroupId ).collection( subCollectionId ).onSnapshot( snapshot => {
+        const unsub = db.collection( 'linkpages' ).doc( linkGroupId ).collection( subCollectionId ).onSnapshot( snapshot => {
             const subCollection = snapshot.docs.map( doc => ( {
                 id: doc.id,
                 ...doc.data()
@@ -34,7 +34,7 @@ const ListLinks = ( { linkGroupId, linkGroupUid, subCollectionId } ) => {
     }, [] );
 
     const deleteLink = id => {
-        db.collection( 'linkgroups' ).doc( linkGroupId ).collection( subCollectionId )
+        db.collection( 'linkpages' ).doc( linkGroupId ).collection( subCollectionId )
         .doc(id)
         .delete();
     }

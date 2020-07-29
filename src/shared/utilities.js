@@ -37,15 +37,22 @@ export const currentUserIsOwner = ( authenticated, uid, groupUid ) => {
     return authenticated && uid === groupUid;
 }
 
+const returnSomething = ( thing ) => {
+    return thing;
+}
+
 // List sub collections of a collection using getSubCollections function
 export const listSubCollections = ( collection, document, stateFunction ) => {
     const getSubCollections = firebase
         .functions()
-        .httpsCallable(  'getSubCollections' );
+        .httpsCallable( 'getSubCollections' );
 
-    getSubCollections( { docPath: collection + '/' + document } )
-    .then(function(result) {
+    const subCollections = getSubCollections( { docPath: collection + '/' + document } )
+    .then( function( result ) {
+        // resolve();
         stateFunction( result.data.collections )
+        // return result.data.collections
+        // returnSomething( result.data.collections )
     })
     .catch(function(error) {
         // Getting the Error details.
@@ -54,21 +61,8 @@ export const listSubCollections = ( collection, document, stateFunction ) => {
         var details = error.details;
         console.log( message )
     });
-}
 
-// Create a new subCollection
-export const createSubCollection = ( linkPageId, callback ) => {
-    const collectionId = generateUniqueId();
-    const subCollection = {
-        parentLinkGroupId: collectionId,
-        parentLinkPageId: linkPageId,
-        title: 'Untitled link group',
-        links: [],
-    }
-    db.collection( 'linkgroups' ).doc( linkPageId ).collection( collectionId ).add( subCollection )
-    .then( function() {
-        return callback()
-    } )
+    return subCollections
 }
 
 /**
@@ -82,7 +76,7 @@ export const createSubCollection = ( linkPageId, callback ) => {
  * @returns {Object}
  */
 export const updateLinkGroup = ( linkPageId, linkGroupId, linkGroupDocId, dataNew ) => {
-    db.collection( 'linkgroups' ).doc( linkPageId ).collection( linkGroupId ).doc( linkGroupDocId ).set( dataNew );
+    db.collection( 'linkpages' ).doc( linkPageId ).collection( linkGroupId ).doc( linkGroupDocId ).set( dataNew );
 }
 
 /**
@@ -94,7 +88,38 @@ export const updateLinkGroup = ( linkPageId, linkGroupId, linkGroupDocId, dataNe
  * @returns {Object}
  */
 export const updateLinkPage = ( linkPageId, dataNew ) => {
-    db.collection( 'linkgroups' ).doc( linkPageId ).set( dataNew );
+    db.collection( 'linkpages' ).doc( linkPageId ).set( dataNew );
+}
+
+/**
+ * Create a new linkGroup subCollection.
+ *
+ * @param {Object}      linkPageData         Object of data to overwrite link group object with
+ * @param {}            callback             The callback to be executed once finished
+ *
+ * @returns {Object}
+ */
+export const createSubCollection = ( linkPageData, callback ) => {
+    // Create unique collectionId
+    const collectionId = generateUniqueId();
+    // Create linkGroup object
+    const subCollection = {
+        parentLinkGroupId: collectionId,
+        parentLinkPageId: linkPageData.id,
+        title: 'Untitled link group',
+        links: [],
+    }
+    // Add the ID of the new linkGroup subcollection to the beginning of the linkPage linkGroupIds array
+    let linkPageGroupIds = linkPageData.linkGroupIds
+    linkPageGroupIds.unshift( collectionId )
+    linkPageData.linkGroupIds = linkPageGroupIds
+    // Update the linkPage array of linkGroupIds
+    updateLinkPage( linkPageData.id, linkPageData )
+    // Add the linkGroup to the linkPage
+    db.collection( 'linkpages' ).doc( linkPageData.id ).collection( collectionId ).add( subCollection )
+    .then( function() {
+        return callback()
+    } )
 }
 
 /**
@@ -118,6 +143,14 @@ export const deleteLink = ( dataCurrent, href ) => {
     updateLinkGroup( dataCurrent.parentLinkPageId, dataCurrent.parentLinkGroupId, dataCurrent.id, dataNew )
 }
 
+
+export const reorder = ( list, startIndex, endIndex ) => {
+    const result = Array.from( list );
+    const [ removed ] = result.splice( startIndex, 1 );
+    result.splice( endIndex, 0, removed );
+
+    return result;
+};
 
 
 ///////////////////////// OLD STUFF PROBS DELETEs //////////////////////////
@@ -144,7 +177,7 @@ export const fireBaseSnapshotDocument = ( collection, document ) => {
 }
 
 export const fireBaseGet = () => {
-    const docRef = db.collection( 'linkgroups' ).doc( 'f868hk34ED1o211LyjPa' );
+    const docRef = db.collection( 'linkpages' ).doc( 'f868hk34ED1o211LyjPa' );
 
     docRef.get().then( doc => {
         if ( doc.exists ) {
@@ -157,7 +190,7 @@ export const fireBaseGet = () => {
     });
 }
 
-export const fireBaseGetLinkgroups = db.collection( 'linkgroups' ).onSnapshot( snapshot => {
+export const fireBaseGetLinkgroups = db.collection( 'linkpages' ).onSnapshot( snapshot => {
     return snapshot.docs.map( doc => ( {
         id: doc.id,
         ...doc.data()

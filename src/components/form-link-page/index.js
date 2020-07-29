@@ -7,11 +7,12 @@ import { db } from '../../firebase'
 import firebase from 'firebase';
 import { convertSpinalCase, createSubCollection } from '../../shared/utilities'
 
-const FormLink = withRouter( ( { history, ...props } ) => {
+const FormLinkPage = withRouter( ( { history, ...props } ) => {
     const [ linkgroup, setLinkgroup ] = useState( {
         name: '',
         slug: '',
         uid: '',
+        linkGroupIds: [],
     } )
 
     const [ linkgroupCreationStatus, setLinkgroupCreationStatus ] = useState( {
@@ -27,15 +28,18 @@ const FormLink = withRouter( ( { history, ...props } ) => {
     // Query firebase to check if the slug already exists
     // If it does, tell the user to pick a new slug
     // If it doesn't, create the new collection
-    const createLinkgroupCollection = ( linkgroupCandidate ) => {
-        db.collection( 'linkgroups' ).where( 'slug', '==', linkgroupCandidate.slug )
+    const createLinkgroupCollection = ( linkPageCandidate ) => {
+        db.collection( 'linkpages' ).where( 'slug', '==', linkPageCandidate.slug )
         .get()
         .then( function( querySnapshot ) {
 
             if ( querySnapshot.docs.length === 0 ) {
-                db.collection( 'linkgroups' ).add( linkgroupCandidate )
+                db.collection( 'linkpages' ).add( linkPageCandidate )
                 .then( function( response ) {
-                    createSubCollection( response.id )
+                    // Add the linkPageId to the linkPageCandidate object
+                    linkPageCandidate.id = response.id
+                    // Create the first subCollection for the new linkPage
+                    createSubCollection( linkPageCandidate )
                 } )
                 .then( function( response ) {
                     setLinkgroupCreationStatus( {
@@ -45,7 +49,7 @@ const FormLink = withRouter( ( { history, ...props } ) => {
 
                     setTimeout( function() {
                         // Redirect user to the new linkGroup page
-                        history.push( '/' + linkgroupCandidate.slug );
+                        history.push( '/' + linkPageCandidate.slug );
                     }, 1000 )
 
                 } )
@@ -79,6 +83,7 @@ const FormLink = withRouter( ( { history, ...props } ) => {
                     name: '',
                     slug: '',
                     uid: user.uid,
+                    linkGroupIds: [],
                 } )
                 setIsSignedIn( true )
             } else if ( user && authFormInitiated ) {
@@ -87,12 +92,14 @@ const FormLink = withRouter( ( { history, ...props } ) => {
                     name: linkgroup.name,
                     slug: linkgroup.slug,
                     uid: user.uid,
+                    linkGroupIds: [],
                 } )
                 setIsSignedIn( true )
                 createLinkgroupCollection( {
                     name: linkgroup.name,
                     slug: linkgroup.slug,
-                    uid: user.uid
+                    uid: user.uid,
+                    linkGroupIds: [],
                 } )
             } else if ( !user && authFormInitiated ) {
                 // User is not authenticated yet but login button has been clicked
@@ -100,6 +107,7 @@ const FormLink = withRouter( ( { history, ...props } ) => {
                     name: linkgroup.name,
                     slug: linkgroup.slug,
                     uid: linkgroup.uid,
+                    linkGroupIds: [],
                 } )
                 setIsSignedIn( false );
             } else {
@@ -108,6 +116,7 @@ const FormLink = withRouter( ( { history, ...props } ) => {
                     name: '',
                     slug: '',
                     uid: '',
+                    linkGroupIds: [],
                 } )
                 setIsSignedIn( false );
             }
@@ -164,6 +173,7 @@ const FormLink = withRouter( ( { history, ...props } ) => {
             name: e.target.value,
             slug: convertSpinalCase( e.target.value ),
             uid: linkgroup.uid,
+            linkGroupIds: [],
         } )
     }
 
@@ -206,4 +216,4 @@ const FormLink = withRouter( ( { history, ...props } ) => {
 
 } )
 
-export default FormLink;
+export default FormLinkPage;
