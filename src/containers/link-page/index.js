@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useState, useReducer } from 'react'
+import React, { useContext, useEffect, useReducer } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 
 import { AppContextNonPersisted } from '../../contextNonPersisted'
@@ -6,7 +6,7 @@ import EditableText from '../../components/editable-text/index'
 import LinkGroup from '../../components/link-group/index'
 
 import { useStickyState } from '../../hooks/useStickyState'
-import { currentUserIsOwner, fireBaseQuery, listSubCollections, createSubCollection, reorder } from '../../shared/utilities'
+import { createSubCollection, currentUserIsOwner, fireBaseQuery, updateLinkPage, reorder } from '../../shared/utilities'
 
 const LinkPage = ( { match } ) => {
 
@@ -29,11 +29,14 @@ const LinkPage = ( { match } ) => {
 
     // Get the subcollections of links for the current quicklinks page
     useEffect( () => {
-        // wtf are we trying to do here
         // get the array of subcollection IDs
         if ( linkPage.length ) {
-            // Call the firebase function to get sub collections and set linkPageSubCollections 
-            listSubCollections( 'linkpages', linkPage[0].id, setLinkPageSubCollections );
+            // ORIGINAL WAY:
+            // Call the firebase function to get sub collections and set linkPageSubCollections
+            // listSubCollections( 'linkpages', linkPage[0].id, setLinkPageSubCollections );
+            // NEW WAY:
+            console.log( linkPage[ 0 ] )
+            setLinkPageSubCollections( linkPage[ 0 ].linkGroupIds )
         }
         // Get the page field array of ids for ordering
         // re-order the array of subcollection IDs based on the array of ids for ordering
@@ -64,19 +67,19 @@ const LinkPage = ( { match } ) => {
             return;
         }
 
-        const items = reorder(
+        const linkGroupIdsNewOrder = reorder(
             linkPageSubCollections,
             result.source.index,
             result.destination.index
         );
 
-        console.log( items )
+        // Update the local state with the new linkGroupIds order
+        setLinkPageSubCollections( linkGroupIdsNewOrder );
 
-        setLinkPageSubCollections( items );
-
-        // When the user drags the items,
-        // Update the ordered array of link group IDs with items
-
+        // Update fireStore with the new linkGroupIds order
+        const linkPageNew = linkPage[ 0 ]
+        linkPageNew.linkGroupIds = linkGroupIdsNewOrder
+        updateLinkPage( linkPage[ 0 ].id, linkPageNew )
     }
 
     return (

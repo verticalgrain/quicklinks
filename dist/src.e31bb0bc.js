@@ -120790,11 +120790,14 @@ var LinkPage = function LinkPage(_ref) {
   }, []); // Get the subcollections of links for the current quicklinks page
 
   (0, _react.useEffect)(function () {
-    // wtf are we trying to do here
     // get the array of subcollection IDs
     if (linkPage.length) {
-      // Call the firebase function to get sub collections and set linkPageSubCollections 
-      (0, _utilities.listSubCollections)('linkpages', linkPage[0].id, setLinkPageSubCollections);
+      // ORIGINAL WAY:
+      // Call the firebase function to get sub collections and set linkPageSubCollections
+      // listSubCollections( 'linkpages', linkPage[0].id, setLinkPageSubCollections );
+      // NEW WAY:
+      console.log(linkPage[0]);
+      setLinkPageSubCollections(linkPage[0].linkGroupIds);
     } // Get the page field array of ids for ordering
     // re-order the array of subcollection IDs based on the array of ids for ordering
     // set the linkpagesubcollections with the new array of subcollection ids with this:
@@ -120823,10 +120826,13 @@ var LinkPage = function LinkPage(_ref) {
       return;
     }
 
-    var items = (0, _utilities.reorder)(linkPageSubCollections, result.source.index, result.destination.index);
-    console.log(items);
-    setLinkPageSubCollections(items); // When the user drags the items,
-    // Update the ordered array of link group IDs with items
+    var linkGroupIdsNewOrder = (0, _utilities.reorder)(linkPageSubCollections, result.source.index, result.destination.index); // Update the local state with the new linkGroupIds order
+
+    setLinkPageSubCollections(linkGroupIdsNewOrder); // Update fireStore with the new linkGroupIds order
+
+    var linkPageNew = linkPage[0];
+    linkPageNew.linkGroupIds = linkGroupIdsNewOrder;
+    (0, _utilities.updateLinkPage)(linkPage[0].id, linkPageNew);
   }
 
   return /*#__PURE__*/_react.default.createElement("main", {
@@ -123252,7 +123258,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64445" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53384" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
