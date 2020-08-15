@@ -1,6 +1,5 @@
 import React, { Fragment, useContext, useState } from 'react'
-import { Link, Router, Route, Switch } from 'react-router-dom'
-import { createBrowserHistory } from 'history'
+import { Link, BrowserRouter, Route, Switch } from 'react-router-dom'
 import CreateLinkPage from '../create-link-page/index'
 import LinkPage from '../link-page/index'
 import Sidebar from '../../components/sidebar/index'
@@ -15,8 +14,6 @@ const Layout = () => {
 
     const { appStatePersisted, setAppStatePersisted } = useContext( AppContextPersisted )
 
-    const customHistory = createBrowserHistory();
-
     return (
         <div className={ 'app theme theme--' + appStatePersisted.theme }>
             <CSSTransition
@@ -28,7 +25,7 @@ const Layout = () => {
             >
                 <Sidebar sidebarOpen={ sidebarOpen } setSidebarOpen={ setSidebarOpen } />
             </CSSTransition>
-            <Router history={customHistory}>
+            <BrowserRouter>
                 <Fragment>
                     <nav className="header">
                         <Link to="/" >
@@ -46,7 +43,7 @@ const Layout = () => {
                         <Route path='/:groupslug' component={ LinkPage } />
                     </Switch>
                 </Fragment>
-            </Router>
+            </BrowserRouter>
         </div>
     )
 }

@@ -110789,7 +110789,7 @@ var LinkGroup = function LinkGroup(_ref) {
       appStateNonPersisted = _useContext2.appStateNonPersisted,
       setAppStateNonPersisted = _useContext2.setAppStateNonPersisted;
 
-  var authenticated = (0, _utilities.currentUserIsOwner)(appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkPage.uid);
+  var isAuthOwner = linkPage.length && (0, _utilities.currentUserIsOwner)(appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkPage.uid);
   var groupVisibilityClass = groupVisibility ? '' : 'grid--collapsed';
   (0, _react.useEffect)(function () {
     var unsub = _firebase.db.collection('linkpages').doc(linkPage.id).collection(subCollectionId).onSnapshot(function (snapshot) {
@@ -110818,7 +110818,7 @@ var LinkGroup = function LinkGroup(_ref) {
     return /*#__PURE__*/_react.default.createElement("div", _extends({
       className: "grid__wrapper",
       ref: provided.innerRef
-    }, provided.draggableProps), /*#__PURE__*/_react.default.createElement("div", _extends({
+    }, provided.draggableProps), isAuthOwner && /*#__PURE__*/_react.default.createElement("div", _extends({
       className: "grid__handle"
     }, provided.dragHandleProps)), groupData && /*#__PURE__*/_react.default.createElement(_index.default, {
       className: "grid__title",
@@ -110835,13 +110835,13 @@ var LinkGroup = function LinkGroup(_ref) {
       }, /*#__PURE__*/_react.default.createElement(_index2.default, {
         href: link.href,
         title: link.title,
-        authenticated: authenticated,
+        authenticated: isAuthOwner,
         linkTargetBlank: appStatePersisted.linkTargetBlank,
         deleteLink: deleteLinkLocal
       }));
     }) : /*#__PURE__*/_react.default.createElement("div", {
       className: "grid__item grid__item--full u-centered"
-    }, "\xA0"), authenticated && /*#__PURE__*/_react.default.createElement("div", {
+    }, "\xA0"), isAuthOwner && /*#__PURE__*/_react.default.createElement("div", {
       className: "grid__item grid__item--plus"
     }, /*#__PURE__*/_react.default.createElement("div", {
       className: "card card--plus",
@@ -110850,7 +110850,7 @@ var LinkGroup = function LinkGroup(_ref) {
       }
     }, /*#__PURE__*/_react.default.createElement("div", {
       className: "card__plus"
-    }, /*#__PURE__*/_react.default.createElement("span", null, "+"), " Add New "))), authenticated && modalState && /*#__PURE__*/_react.default.createElement(_index3.default, {
+    }, /*#__PURE__*/_react.default.createElement("span", null, "+"), " Add New "))), isAuthOwner && modalState && /*#__PURE__*/_react.default.createElement(_index3.default, {
       modalState: modalState,
       setModalState: setModalState,
       linkGroupUid: linkPage.uid,
@@ -110958,7 +110958,6 @@ var LinkPage = function LinkPage(_ref) {
       // Call the firebase function to get sub collections and set linkPageSubCollections
       // listSubCollections( 'linkpages', linkPage[0].id, setLinkPageSubCollections );
       // NEW WAY:
-      console.log(linkPage[0]);
       setLinkPageSubCollections(linkPage[0].linkGroupIds);
     } // Get the page field array of ids for ordering
     // re-order the array of subcollection IDs based on the array of ids for ordering
@@ -110980,6 +110979,10 @@ var LinkPage = function LinkPage(_ref) {
   };
 
   function onDragEnd(result) {
+    if (!isAuthOwner) {
+      return;
+    }
+
     if (!result.destination) {
       return;
     }
@@ -113243,8 +113246,6 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _reactRouterDom = require("react-router-dom");
 
-var _history = require("history");
-
 var _index = _interopRequireDefault(require("../create-link-page/index"));
 
 var _index2 = _interopRequireDefault(require("../link-page/index"));
@@ -113285,7 +113286,6 @@ var Layout = function Layout() {
       appStatePersisted = _useContext.appStatePersisted,
       setAppStatePersisted = _useContext.setAppStatePersisted;
 
-  var customHistory = (0, _history.createBrowserHistory)();
   return /*#__PURE__*/_react.default.createElement("div", {
     className: 'app theme theme--' + appStatePersisted.theme
   }, /*#__PURE__*/_react.default.createElement(_reactTransitionGroup.CSSTransition, {
@@ -113299,9 +113299,7 @@ var Layout = function Layout() {
   }, /*#__PURE__*/_react.default.createElement(_index3.default, {
     sidebarOpen: sidebarOpen,
     setSidebarOpen: setSidebarOpen
-  })), /*#__PURE__*/_react.default.createElement(_reactRouterDom.Router, {
-    history: customHistory
-  }, /*#__PURE__*/_react.default.createElement(_react.Fragment, null, /*#__PURE__*/_react.default.createElement("nav", {
+  })), /*#__PURE__*/_react.default.createElement(_reactRouterDom.BrowserRouter, null, /*#__PURE__*/_react.default.createElement(_react.Fragment, null, /*#__PURE__*/_react.default.createElement("nav", {
     className: "header"
   }, /*#__PURE__*/_react.default.createElement(_reactRouterDom.Link, {
     to: "/"
@@ -113354,7 +113352,7 @@ var Layout = function Layout() {
 
 var _default = Layout;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","history":"../node_modules/history/esm/history.js","../create-link-page/index":"containers/create-link-page/index.js","../link-page/index":"containers/link-page/index.js","../../components/sidebar/index":"components/sidebar/index.js","react-transition-group":"../node_modules/react-transition-group/esm/index.js","../../contextPersisted":"contextPersisted.js","../../styles.css":"styles.css"}],"index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","../create-link-page/index":"containers/create-link-page/index.js","../link-page/index":"containers/link-page/index.js","../../components/sidebar/index":"components/sidebar/index.js","react-transition-group":"../node_modules/react-transition-group/esm/index.js","../../contextPersisted":"contextPersisted.js","../../styles.css":"styles.css"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireWildcard(require("react"));
@@ -113420,7 +113418,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53064" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49727" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -35,7 +35,6 @@ const LinkPage = ( { match } ) => {
             // Call the firebase function to get sub collections and set linkPageSubCollections
             // listSubCollections( 'linkpages', linkPage[0].id, setLinkPageSubCollections );
             // NEW WAY:
-            console.log( linkPage[ 0 ] )
             setLinkPageSubCollections( linkPage[ 0 ].linkGroupIds )
         }
         // Get the page field array of ids for ordering
@@ -59,6 +58,10 @@ const LinkPage = ( { match } ) => {
     }
 
     function onDragEnd( result ) {
+        if ( !isAuthOwner ) {
+            return;
+        }
+
         if ( !result.destination ) {
             return;
         }

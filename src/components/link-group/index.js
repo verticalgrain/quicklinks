@@ -22,7 +22,7 @@ const LinkGroup = ( { linkPage, subCollectionId, index } ) => {
 
     const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
 
-    const authenticated = currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkPage.uid );
+    const isAuthOwner = linkPage.length && currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkPage.uid );
 
     const groupVisibilityClass = groupVisibility ? '' : 'grid--collapsed';
 
@@ -53,26 +53,26 @@ const LinkGroup = ( { linkPage, subCollectionId, index } ) => {
                         ref={ provided.innerRef }
                         { ...provided.draggableProps }
                     >
-                        <div className="grid__handle" { ...provided.dragHandleProps }></div>
+                        { isAuthOwner && <div className="grid__handle" { ...provided.dragHandleProps }></div> }
                         { groupData && <EditableText className="grid__title" text={ groupData.title } linkPage={ linkPage } linkGroup={ groupData } editableTextContext='linkGroupTitle' /> }
                         <div className={ 'grid ' + groupVisibilityClass }>
                             <Fragment>
                                 { !!Object.keys( groupData ).length && !!groupData.links.length ? groupData.links.map( link => {
                                     return (
                                     <div className="grid__item" key={ 'grid__item-' + link.title }>
-                                        <Link href={ link.href } title={ link.title } authenticated={ authenticated } linkTargetBlank={ appStatePersisted.linkTargetBlank } deleteLink={ deleteLinkLocal } />
+                                        <Link href={ link.href } title={ link.title } authenticated={ isAuthOwner } linkTargetBlank={ appStatePersisted.linkTargetBlank } deleteLink={ deleteLinkLocal } />
                                     </div>
                                 ) } )
                                 : <div className="grid__item grid__item--full u-centered">&nbsp;</div>
                                 }
-                                { authenticated &&
+                                { isAuthOwner &&
                                     <div className="grid__item grid__item--plus">
                                         <div className="card card--plus" onClick={ () => setModalState( ! modalState ) }>
                                             <div className="card__plus"><span>+</span> Add New </div>
                                         </div>
                                     </div>
                                 }
-                                { authenticated && modalState && <ModalCreateLink modalState={ modalState } setModalState={ setModalState } linkGroupUid={ linkPage.uid } linkPageId={ linkPage.id } linkGroupSubCollectionId={ subCollectionId } groupData={ groupData } /> }
+                                { isAuthOwner && modalState && <ModalCreateLink modalState={ modalState } setModalState={ setModalState } linkGroupUid={ linkPage.uid } linkPageId={ linkPage.id } linkGroupSubCollectionId={ subCollectionId } groupData={ groupData } /> }
                             </Fragment>
                         </div>
                         <div className="grid__collapse-expand" onClick={ () => setGroupVisibility( ! groupVisibility ) }>
