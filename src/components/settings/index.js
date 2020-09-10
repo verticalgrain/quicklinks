@@ -1,8 +1,10 @@
 import React, { Fragment, useContext } from 'react'
 
+import firebase from 'firebase';
+
 import { AppContextPersisted } from '../../contextPersisted'
 import { AppContextNonPersisted } from '../../contextNonPersisted'
-import firebase from 'firebase';
+import AuthLink from '../auth-link/index'
 
 const Settings = () => {
 
@@ -27,8 +29,7 @@ const Settings = () => {
     return (
         <Fragment>
             <div className="settings">
-                { appStateNonPersisted && appStateNonPersisted.authenticated && <div onClick={ () => firebase.auth().signOut() }>Sign-out</div> }
-                { appStateNonPersisted && ! appStateNonPersisted.authenticated && <div onClick={ () => firebase.auth().signIn() }>Sign-in</div> }
+                <AuthLink />
                 <hr />
                 <div className="toggle">
                     <span>Light Theme</span>

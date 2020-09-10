@@ -726,7 +726,7 @@ input:after {
     z-index: 10;
     left: 100%;
     top: 60px;
-    width: 25vw;
+    width: 370px;
     max-height: calc( 100vh - 100px );
     display: block;
     transition: var( --transition-fast );
@@ -739,7 +739,7 @@ input:after {
 
 .sidebar-enter-active,
 .sidebar-enter-done {
-    transform: translate3d( calc( -25vw - 20px ), 20px, 0 );
+    transform: translate3d( calc( -370px - 20px ), 20px, 0 );
     opacity: 1;
 }
 
@@ -870,4 +870,13 @@ nav.header {
 .editable-text[ contenteditable="true" ]:hover::before,
 .editable-text[ contenteditable="true" ]:focus::before {
     opacity: 1;
+}
+
+.auth-link__link:hover {
+    cursor: pointer;
+}
+
+
+.app .auth-link .firebaseui-idp-icon-wrapper:after {
+    content: 'Sign In';
 }
