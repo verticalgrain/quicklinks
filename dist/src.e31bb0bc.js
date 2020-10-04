@@ -110789,7 +110789,7 @@ var LinkGroup = function LinkGroup(_ref) {
       appStateNonPersisted = _useContext2.appStateNonPersisted,
       setAppStateNonPersisted = _useContext2.setAppStateNonPersisted;
 
-  var isAuthOwner = linkPage.length && (0, _utilities.currentUserIsOwner)(appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkPage.uid);
+  var isAuthOwner = (0, _utilities.currentUserIsOwner)(appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkPage.uid);
   var groupVisibilityClass = groupVisibility ? '' : 'grid--collapsed';
   (0, _react.useEffect)(function () {
     var unsub = _firebase.db.collection('linkpages').doc(linkPage.id).collection(subCollectionId).onSnapshot(function (snapshot) {
@@ -113483,7 +113483,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52042" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51251" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
