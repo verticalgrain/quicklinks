@@ -22,7 +22,7 @@ const LinkGroup = ( { linkPage, subCollectionId, index } ) => {
 
     const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
 
-    const isAuthOwner = linkPage.length && currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkPage.uid );
+    const isAuthOwner = currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkPage.uid );
 
     const groupVisibilityClass = groupVisibility ? '' : 'grid--collapsed';
 
