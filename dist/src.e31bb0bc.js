@@ -111049,7 +111049,7 @@ var LinkPage = function LinkPage(_ref) {
 
 var _default = LinkPage;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","react-beautiful-dnd":"../node_modules/react-beautiful-dnd/dist/react-beautiful-dnd.esm.js","../../contextNonPersisted":"contextNonPersisted.js","../../components/editable-text/index":"components/editable-text/index.js","../../components/link-group/index":"components/link-group/index.js","../../hooks/useStickyState":"hooks/useStickyState.js","../../shared/utilities":"shared/utilities.js"}],"components/settings/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-beautiful-dnd":"../node_modules/react-beautiful-dnd/dist/react-beautiful-dnd.esm.js","../../contextNonPersisted":"contextNonPersisted.js","../../components/editable-text/index":"components/editable-text/index.js","../../components/link-group/index":"components/link-group/index.js","../../hooks/useStickyState":"hooks/useStickyState.js","../../shared/utilities":"shared/utilities.js"}],"components/auth-link/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -111059,11 +111059,84 @@ exports.default = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
+var _firebase = _interopRequireDefault(require("firebase"));
+
+var _StyledFirebaseAuth = _interopRequireDefault(require("react-firebaseui/StyledFirebaseAuth"));
+
+var _contextNonPersisted = require("../../contextNonPersisted");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+var AuthLink = function AuthLink() {
+  var _useContext = (0, _react.useContext)(_contextNonPersisted.AppContextNonPersisted),
+      appStateNonPersisted = _useContext.appStateNonPersisted,
+      setAppStateNonPersisted = _useContext.setAppStateNonPersisted; // Configure FirebaseUI.
+
+
+  var uiConfig = {
+    callbacks: {
+      signInSuccessWithAuthResult: function signInSuccessWithAuthResult() {
+        return false;
+      }
+    },
+    // Popup signin flow rather than redirect flow.
+    signInFlow: 'popup',
+    // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
+    // signInSuccessUrl: '/create',
+    // We will display Google and Facebook as auth providers.
+    signInOptions: [{
+      provider: _firebase.default.auth.GoogleAuthProvider.PROVIDER_ID
+    }]
+  };
+  (0, _react.useEffect)(function () {
+    var unsub = _firebase.default.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        console.log('authenticated');
+      } else if (!user) {
+        console.log('not authenticated');
+      }
+    });
+
+    return function () {
+      unsub();
+    };
+  }, []);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "auth-link"
+  }, appStateNonPersisted && appStateNonPersisted.authenticated && /*#__PURE__*/_react.default.createElement("div", {
+    className: "auth-link__link",
+    onClick: function onClick() {
+      return _firebase.default.auth().signOut();
+    }
+  }, "Sign-out"), appStateNonPersisted && !appStateNonPersisted.authenticated && /*#__PURE__*/_react.default.createElement(_StyledFirebaseAuth.default, {
+    uiConfig: uiConfig,
+    firebaseAuth: _firebase.default.auth()
+  }));
+};
+
+var _default = AuthLink;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","firebase":"../node_modules/firebase/dist/index.cjs.js","react-firebaseui/StyledFirebaseAuth":"../node_modules/react-firebaseui/StyledFirebaseAuth.js","../../contextNonPersisted":"contextNonPersisted.js"}],"components/settings/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _firebase = _interopRequireDefault(require("firebase"));
+
 var _contextPersisted = require("../../contextPersisted");
 
 var _contextNonPersisted = require("../../contextNonPersisted");
 
-var _firebase = _interopRequireDefault(require("firebase"));
+var _index = _interopRequireDefault(require("../auth-link/index"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -111094,15 +111167,7 @@ var Settings = function Settings() {
 
   return /*#__PURE__*/_react.default.createElement(_react.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
     className: "settings"
-  }, appStateNonPersisted && appStateNonPersisted.authenticated && /*#__PURE__*/_react.default.createElement("div", {
-    onClick: function onClick() {
-      return _firebase.default.auth().signOut();
-    }
-  }, "Sign-out"), appStateNonPersisted && !appStateNonPersisted.authenticated && /*#__PURE__*/_react.default.createElement("div", {
-    onClick: function onClick() {
-      return _firebase.default.auth().signIn();
-    }
-  }, "Sign-in"), /*#__PURE__*/_react.default.createElement("hr", null), /*#__PURE__*/_react.default.createElement("div", {
+  }, /*#__PURE__*/_react.default.createElement(_index.default, null), /*#__PURE__*/_react.default.createElement("hr", null), /*#__PURE__*/_react.default.createElement("div", {
     className: "toggle"
   }, /*#__PURE__*/_react.default.createElement("span", null, "Light Theme"), /*#__PURE__*/_react.default.createElement("input", {
     className: "toggle__checkbox",
@@ -111140,7 +111205,7 @@ var Settings = function Settings() {
 
 var _default = Settings;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","../../contextPersisted":"contextPersisted.js","../../contextNonPersisted":"contextNonPersisted.js","firebase":"../node_modules/firebase/dist/index.cjs.js"}],"components/sidebar/styles.css":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","firebase":"../node_modules/firebase/dist/index.cjs.js","../../contextPersisted":"contextPersisted.js","../../contextNonPersisted":"contextNonPersisted.js","../auth-link/index":"components/auth-link/index.js"}],"components/sidebar/styles.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -113418,7 +113483,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57285" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51507" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
