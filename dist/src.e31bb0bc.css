@@ -21,12 +21,13 @@ body {
 }
 
 :root {
-    --color-theme-2: #006494; /* Sea blue */
-    --color-theme-3: #262626; /* Rasin Black */
-    --color-theme-4: #DC493A;/* Vermillion */
+    --color-theme-2: #20639b;
+    --color-theme-3: #173f5f;
+    --color-theme-4: #ed553b;
+    --color-theme-5: #3CAEA3;
+    --color-theme-6: #f6d55c;
     --color-gray-lightest: #dcdcdc;
     --color-gray-light: #999;
-    --asdfadsfasdfasdf: #B8B8B8;
     --color-gray-medium: #666666;
     --color-gray-dark: #333333;
     --color-overlay: rgba( 0, 0, 0, 0.4 );
@@ -623,6 +624,38 @@ main.main {
     transform: scale( 1.25 );
 }
 
+.button--plus-wide {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    height: 45px;
+    padding: 10px 15px 10px 40px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #3caea3, #20639b);
+    letter-spacing: 2px;
+    text-transform: uppercase; 
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 1px 2px 4px -1px rgba(60, 60, 60, 0.64);
+}
+
+.button--plus-wide:after,
+.button--plus-wide:before {
+    content: "";
+    width: 2px;
+    height: 14px;
+    background: var( --color-text-default );
+    position: absolute;
+    left: 20px;
+}
+
+.button--plus-wide:after {
+    transform: rotate( 90deg );
+}
+
 .modal {
     position: fixed;
     z-index: 2;
@@ -779,6 +812,10 @@ input:after {
     opacity: 1;
 }
 
+.sidebar-enter-done ~ main {
+    pointer-events: none;
+}
+
 @media ( max-width: 766px ) {
     .sidebar {
         width: 80vw;
@@ -847,7 +884,7 @@ input:after {
 }
 
 .toggle .toggle__checkbox:checked + .toggle__label {
-    background: #9FD6AE;
+    background: var( --color-theme-5 );
 }
 
 .toggle .toggle__checkbox:checked + .toggle__label:after {

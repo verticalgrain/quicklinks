@@ -127,8 +127,8 @@ const LinkPage = ( { match } ) => {
                     </div>
                 </div>
                 { isAuthOwner &&
-                    <div className="button__wrapper button__wrapper--bigred">
-                        <div className="button button--bigred" onClick={ () => createNewSubCollection( linkPage[ 0 ] ) }>+</div>
+                    <div className="button__wrapper">
+                        <div className="button button--plus-wide" onClick={ () => createNewSubCollection( linkPage[ 0 ] ) }>New Link Group</div>
                     </div>
                 }
             </div>

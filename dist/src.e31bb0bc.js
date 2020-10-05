@@ -110923,7 +110923,7 @@ var LinkGroup = function LinkGroup(_ref) {
       width: "32",
       xmlns: "http://www.w3.org/2000/svg"
     }, /*#__PURE__*/_react.default.createElement("path", {
-      fill: "#DC493A",
+      fill: "#999999",
       d: "M1 20 L16 6 L31 20 L27 24 L16 14 L5 24 z"
     }))));
   }));
@@ -111099,13 +111099,13 @@ var LinkPage = function LinkPage(_ref) {
       });
     }) : /*#__PURE__*/_react.default.createElement("div", null, "Ooops, the group does not seem to exist."), provided.placeholder);
   }))))), isAuthOwner && /*#__PURE__*/_react.default.createElement("div", {
-    className: "button__wrapper button__wrapper--bigred"
+    className: "button__wrapper"
   }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "button button--bigred",
+    className: "button button--plus-wide",
     onClick: function onClick() {
       return createNewSubCollection(linkPage[0]);
     }
-  }, "+"))));
+  }, "New Link Group"))));
 };
 
 var _default = LinkPage;

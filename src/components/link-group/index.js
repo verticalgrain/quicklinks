@@ -77,7 +77,7 @@ const LinkGroup = ( { linkPage, subCollectionId, index, deleteLinkGroup } ) => {
                             </Fragment>
                         </div>
                         <div className="grid__collapse-expand" onClick={ () => setGroupVisibility( ! groupVisibility ) }>
-                            <svg height="32" id="chevron-up" viewBox="0 0 32 32" width="32" xmlns="http://www.w3.org/2000/svg"><path fill="#DC493A" d="M1 20 L16 6 L31 20 L27 24 L16 14 L5 24 z"/></svg>
+                            <svg height="32" id="chevron-up" viewBox="0 0 32 32" width="32" xmlns="http://www.w3.org/2000/svg"><path fill="#999999" d="M1 20 L16 6 L31 20 L27 24 L16 14 L5 24 z"/></svg>
                         </div>
                     </div>
                 ) }
