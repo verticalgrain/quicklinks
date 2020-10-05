@@ -629,7 +629,7 @@ main.main {
     bottom: 40px;
     right: 40px;
     height: 45px;
-    padding: 10px 15px 10px 40px;
+    padding: 10px 10px 10px 30px;
     border-radius: 4px;
     background: linear-gradient(90deg, #3caea3, #20639b);
     letter-spacing: 2px;
@@ -642,14 +642,21 @@ main.main {
     box-shadow: 1px 2px 4px -1px rgba(60, 60, 60, 0.64);
 }
 
+@media ( max-width: 766px ) {
+    .button--plus-wide {
+        bottom: 10px;
+        right: 10px;
+    }
+}
+
 .button--plus-wide:after,
 .button--plus-wide:before {
     content: "";
     width: 2px;
-    height: 14px;
+    height: 10px;
     background: var( --color-text-default );
     position: absolute;
-    left: 20px;
+    left: 15px;
 }
 
 .button--plus-wide:after {
