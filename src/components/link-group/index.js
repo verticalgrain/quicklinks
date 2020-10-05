@@ -10,7 +10,7 @@ import { AppContextNonPersisted } from '../../contextNonPersisted'
 import { currentUserIsOwner, deleteLink } from '../../shared/utilities'
 import { useStickyState } from '../../hooks/useStickyState'
 
-const LinkGroup = ( { linkPage, subCollectionId, index } ) => {
+const LinkGroup = ( { linkPage, subCollectionId, index, deleteLinkGroup } ) => {
 
     const [ groupData, setGroupData ] = useStickyState( {}, 'lg-' + subCollectionId )
 
@@ -54,6 +54,7 @@ const LinkGroup = ( { linkPage, subCollectionId, index } ) => {
                         { ...provided.draggableProps }
                     >
                         { isAuthOwner && <div className="grid__handle" { ...provided.dragHandleProps }></div> }
+                        { isAuthOwner && <div className="grid__delete-group" onClick={ () => deleteLinkGroup( linkPage, groupData.parentLinkGroupId, groupData.id ) }></div> }
                         { groupData && <EditableText className="grid__title" text={ groupData.title } linkPage={ linkPage } linkGroup={ groupData } editableTextContext='linkGroupTitle' /> }
                         <div className={ 'grid ' + groupVisibilityClass }>
                             <Fragment>

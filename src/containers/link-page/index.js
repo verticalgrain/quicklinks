@@ -6,14 +6,14 @@ import EditableText from '../../components/editable-text/index'
 import LinkGroup from '../../components/link-group/index'
 
 import { useStickyState } from '../../hooks/useStickyState'
-import { createSubCollection, currentUserIsOwner, fireBaseQuery, updateLinkPage, reorder } from '../../shared/utilities'
+import { createSubCollection, currentUserIsOwner, fireBaseQuery, updateLinkPage, reorder, deleteLinkGroup } from '../../shared/utilities'
 
 const LinkPage = ( { match } ) => {
 
     const [ linkPage, setLinkPage ] = useStickyState( [], 'lp-' + match.params.groupslug )
 
     const [ linkPageSubCollections, setLinkPageSubCollections ] = useStickyState( [], 'lp-sc-' + match.params.groupslug )
-
+    console.log( linkPageSubCollections );
     const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
 
     const [ _count, forceUpdate ] = useReducer(x => x + 1, 0);
@@ -55,6 +55,10 @@ const LinkPage = ( { match } ) => {
 
     const createNewSubCollection = ( linkPageId ) => {
         createSubCollection( linkPageId, forceUpdate );
+    }
+
+    const deleteLinkGroupFunction = ( linkPageData, linkGroupId, linkGroupDocId ) => {
+        deleteLinkGroup( linkPageData, linkGroupId, linkGroupDocId, setLinkPageSubCollections, forceUpdate );
     }
 
     function onDragEnd( result ) {
@@ -109,7 +113,7 @@ const LinkPage = ( { match } ) => {
                                         <div ref={ provided.innerRef } { ...provided.droppableProps }>
                                             { linkPage.length ?
                                                 linkPageSubCollections && linkPageSubCollections.map( ( subCollection, index ) => (
-                                                    <LinkGroup key={ index + subCollection  } linkPage={ linkPage[ 0 ] } subCollectionId={ subCollection } index={ index } />
+                                                    <LinkGroup key={ index + subCollection  } linkPage={ linkPage[ 0 ] } subCollectionId={ subCollection } index={ index } deleteLinkGroup={ deleteLinkGroupFunction } />
                                                 ))
                                             :
                                                 <div>Ooops, the group does not seem to exist.</div>

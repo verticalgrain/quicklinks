@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import * as firebase from 'firebase/app';
 import { db } from '../firebase'
 
@@ -79,6 +79,20 @@ export const updateLinkGroup = ( linkPageId, linkGroupId, linkGroupDocId, dataNe
     db.collection( 'linkpages' ).doc( linkPageId ).collection( linkGroupId ).doc( linkGroupDocId ).set( dataNew );
 }
 
+// /**
+//  * Delete a link group object.
+//  *
+//  * @param {number}      linkPageId      ID of the link page
+//  * @param {number}      linkGroupId     ID of the specific link group on the page
+//  * @param {number}      linkGroupDocId  Optional parameter.
+//  * @param {Object}      dataNew         Object of data to overwrite link group object with
+//  *
+//  * @returns {Object}
+//  */
+// export const deleteLinkGroup = ( linkPageId, linkGroupId, linkGroupDocId ) => {
+//     db.collection( 'linkpages' ).doc( linkPageId ).collection( linkGroupId ).doc( linkGroupDocId ).delete();
+// }
+
 /**
  * Update a link page object.
  *
@@ -120,6 +134,34 @@ export const createSubCollection = ( linkPageData, callback ) => {
     .then( function() {
         return callback()
     } )
+}
+
+/**
+ * Delete a linkPage subCollection.
+ *
+ * @param {Object}      linkPageData         Object of data for the link page
+ * @param {String}            linkGroupId    ID of the link group
+ * @param {String}            linkGroupDocId ID of the link group document
+ *
+ */
+export const deleteLinkGroup = ( linkPageData, linkGroupId, linkGroupDocId, setLinkPageSubCollections, callback ) => {
+    db.collection( 'linkpages' ).doc( linkPageData.id ).collection( linkGroupId ).doc( linkGroupDocId ).delete();
+
+    let linkPageDataNew = linkPageData;
+    let linkPageGroupIds = linkPageData.linkGroupIds
+    const index = linkPageGroupIds.indexOf( linkGroupId );
+    console.log( linkPageGroupIds );
+    if (index > -1) {
+        linkPageGroupIds.splice( index, 1 );
+    }
+    console.log( 'link page group ids:')
+    console.log( linkPageGroupIds );
+    linkPageDataNew.linkGroupIds = linkPageGroupIds
+    // Update the local state of sub collections in link page component
+    setLinkPageSubCollections( linkPageGroupIds )
+    // Update link page in FB
+    updateLinkPage( linkPageData.id, linkPageDataNew )
+    return callback();
 }
 
 /**

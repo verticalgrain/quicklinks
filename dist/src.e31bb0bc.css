@@ -26,6 +26,7 @@ body {
     --color-theme-4: #DC493A;/* Vermillion */
     --color-gray-lightest: #dcdcdc;
     --color-gray-light: #999;
+    --asdfadsfasdfasdf: #B8B8B8;
     --color-gray-medium: #666666;
     --color-gray-dark: #333333;
     --color-overlay: rgba( 0, 0, 0, 0.4 );
@@ -48,6 +49,7 @@ body {
     --color-text-dark: #000;
     --color-text-default: #d8d8d8;
     --color-card: var( --color-gray-dark );
+    --color-gray-icon: var( --color-gray-light );
 }
 
 :root .theme--light {
@@ -57,6 +59,7 @@ body {
     --color-text-dark: #fff;
     --color-text-default: rgba( 0, 0, 0, 0.7 );
     --color-card: #ffffff;
+    --color-gray-icon: var( --color-gray-light );
 }
 
 .color {
@@ -207,16 +210,18 @@ main.main {
     display: inline-block;
     background: var( --color-background-default );
     font-weight: 600;
-    padding: 0 80px 0 40px;
+    padding: 0 40px;
+    margin: 30px 0 0 0;
 }
 
 @media ( max-width: 766px ) {
     .grid__title {
-        padding: 0 85px 0 20px;
+        padding: 0 20px;
     }
 }
 
-.grid__handle {
+.grid__handle,
+.grid__delete-group {
     width: 60px;
     height: 60px;
     display: block;
@@ -234,17 +239,47 @@ main.main {
     background-image: var( --icon-drag-light );
 }
 
-.grid__wrapper:hover > .grid__handle {
+.grid__wrapper:hover > .grid__handle,
+.grid__wrapper:hover > .grid__delete-group {
     opacity: 1;
 }
 
+.grid__delete-group {
+    background: none;
+    right: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid__delete-group:after,
+.grid__delete-group:before {
+    content: "";
+    width: 2px;
+    height: 16px;
+    background: var( --color-gray-icon );
+    transform: rotate( 45deg ) translateY( -1px );
+}
+
+.grid__delete-group:after {
+    transform: rotate( -45deg ) translateY( -1px );
+}
+
+.grid__delete-group:hover {
+    cursor: pointer;
+}
+
 @media ( max-width: 766px ) {
-    .grid__handle {
+    .grid__handle,
+    .grid__delete-group {
         width: 40px;
         height: 40px;
         right: 40px;
         top: 10px;
         opacity: 1;
+    }
+    .grid__delete-group {
+        right: 80px;
     }
 }
 
@@ -860,6 +895,12 @@ nav.header {
     right: -26px;
     opacity: 0;
     transition-duration: 0.2s;
+}
+
+@media ( max-width: 766px ) {
+    .editable-text::before {
+        display: none;
+    }
 }
 
 .theme--dark .editable-text::before {

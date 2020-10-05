@@ -98345,9 +98345,9 @@ module.exports = firebase;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.fireBaseGetLinkgroups = exports.fireBaseGet = exports.fireBaseSnapshotDocument = exports.fireBaseGet1 = exports.reorder = exports.deleteLink = exports.createSubCollection = exports.updateLinkPage = exports.updateLinkGroup = exports.listSubCollections = exports.currentUserIsOwner = exports.fireBaseQuery = exports.convertSpinalCase = exports.generateUniqueId = void 0;
+exports.fireBaseGetLinkgroups = exports.fireBaseGet = exports.fireBaseSnapshotDocument = exports.fireBaseGet1 = exports.reorder = exports.deleteLink = exports.deleteLinkGroup = exports.createSubCollection = exports.updateLinkPage = exports.updateLinkGroup = exports.listSubCollections = exports.currentUserIsOwner = exports.fireBaseQuery = exports.convertSpinalCase = exports.generateUniqueId = void 0;
 
-var _react = _interopRequireWildcard(require("react"));
+var _react = _interopRequireDefault(require("react"));
 
 var firebase = _interopRequireWildcard(require("firebase/app"));
 
@@ -98356,6 +98356,8 @@ var _firebase = require("../firebase");
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
@@ -98458,7 +98460,20 @@ exports.listSubCollections = listSubCollections;
 
 var updateLinkGroup = function updateLinkGroup(linkPageId, linkGroupId, linkGroupDocId, dataNew) {
   _firebase.db.collection('linkpages').doc(linkPageId).collection(linkGroupId).doc(linkGroupDocId).set(dataNew);
-};
+}; // /**
+//  * Delete a link group object.
+//  *
+//  * @param {number}      linkPageId      ID of the link page
+//  * @param {number}      linkGroupId     ID of the specific link group on the page
+//  * @param {number}      linkGroupDocId  Optional parameter.
+//  * @param {Object}      dataNew         Object of data to overwrite link group object with
+//  *
+//  * @returns {Object}
+//  */
+// export const deleteLinkGroup = ( linkPageId, linkGroupId, linkGroupDocId ) => {
+//     db.collection( 'linkpages' ).doc( linkPageId ).collection( linkGroupId ).doc( linkGroupDocId ).delete();
+// }
+
 /**
  * Update a link page object.
  *
@@ -98508,6 +98523,39 @@ var createSubCollection = function createSubCollection(linkPageData, callback) {
   });
 };
 /**
+ * Delete a linkPage subCollection.
+ *
+ * @param {Object}      linkPageData         Object of data for the link page
+ * @param {String}            linkGroupId    ID of the link group
+ * @param {String}            linkGroupDocId ID of the link group document
+ *
+ */
+
+
+exports.createSubCollection = createSubCollection;
+
+var deleteLinkGroup = function deleteLinkGroup(linkPageData, linkGroupId, linkGroupDocId, setLinkPageSubCollections, callback) {
+  _firebase.db.collection('linkpages').doc(linkPageData.id).collection(linkGroupId).doc(linkGroupDocId).delete();
+
+  var linkPageDataNew = linkPageData;
+  var linkPageGroupIds = linkPageData.linkGroupIds;
+  var index = linkPageGroupIds.indexOf(linkGroupId);
+  console.log(linkPageGroupIds);
+
+  if (index > -1) {
+    linkPageGroupIds.splice(index, 1);
+  }
+
+  console.log('link page group ids:');
+  console.log(linkPageGroupIds);
+  linkPageDataNew.linkGroupIds = linkPageGroupIds; // Update the local state of sub collections in link page component
+
+  setLinkPageSubCollections(linkPageGroupIds); // Update link page in FB
+
+  updateLinkPage(linkPageData.id, linkPageDataNew);
+  return callback();
+};
+/**
  * Delete a link from a link group object.
  *
  * @param {Object}      dataCurrent     Object of data to overwrite link group object with.
@@ -98517,7 +98565,7 @@ var createSubCollection = function createSubCollection(linkPageData, callback) {
  */
 
 
-exports.createSubCollection = createSubCollection;
+exports.deleteLinkGroup = deleteLinkGroup;
 
 var deleteLink = function deleteLink(dataCurrent, href) {
   var dataNew = dataCurrent;
@@ -110764,7 +110812,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var LinkGroup = function LinkGroup(_ref) {
   var linkPage = _ref.linkPage,
       subCollectionId = _ref.subCollectionId,
-      index = _ref.index;
+      index = _ref.index,
+      deleteLinkGroup = _ref.deleteLinkGroup;
 
   var _useStickyState = (0, _useStickyState3.useStickyState)({}, 'lg-' + subCollectionId),
       _useStickyState2 = _slicedToArray(_useStickyState, 2),
@@ -110820,7 +110869,12 @@ var LinkGroup = function LinkGroup(_ref) {
       ref: provided.innerRef
     }, provided.draggableProps), isAuthOwner && /*#__PURE__*/_react.default.createElement("div", _extends({
       className: "grid__handle"
-    }, provided.dragHandleProps)), groupData && /*#__PURE__*/_react.default.createElement(_index.default, {
+    }, provided.dragHandleProps)), isAuthOwner && /*#__PURE__*/_react.default.createElement("div", {
+      className: "grid__delete-group",
+      onClick: function onClick() {
+        return deleteLinkGroup(linkPage, groupData.parentLinkGroupId, groupData.id);
+      }
+    }), groupData && /*#__PURE__*/_react.default.createElement(_index.default, {
       className: "grid__title",
       text: groupData.title,
       linkPage: linkPage,
@@ -110932,6 +110986,8 @@ var LinkPage = function LinkPage(_ref) {
       linkPageSubCollections = _useStickyState4[0],
       setLinkPageSubCollections = _useStickyState4[1];
 
+  console.log(linkPageSubCollections);
+
   var _useContext = (0, _react.useContext)(_contextNonPersisted.AppContextNonPersisted),
       appStateNonPersisted = _useContext.appStateNonPersisted,
       setAppStateNonPersisted = _useContext.setAppStateNonPersisted;
@@ -110976,6 +111032,10 @@ var LinkPage = function LinkPage(_ref) {
 
   var createNewSubCollection = function createNewSubCollection(linkPageId) {
     (0, _utilities.createSubCollection)(linkPageId, forceUpdate);
+  };
+
+  var deleteLinkGroupFunction = function deleteLinkGroupFunction(linkPageData, linkGroupId, linkGroupDocId) {
+    (0, _utilities.deleteLinkGroup)(linkPageData, linkGroupId, linkGroupDocId, setLinkPageSubCollections, forceUpdate);
   };
 
   function onDragEnd(result) {
@@ -111034,7 +111094,8 @@ var LinkPage = function LinkPage(_ref) {
         key: index + subCollection,
         linkPage: linkPage[0],
         subCollectionId: subCollection,
-        index: index
+        index: index,
+        deleteLinkGroup: deleteLinkGroupFunction
       });
     }) : /*#__PURE__*/_react.default.createElement("div", null, "Ooops, the group does not seem to exist."), provided.placeholder);
   }))))), isAuthOwner && /*#__PURE__*/_react.default.createElement("div", {
@@ -113483,7 +113544,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51507" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64561" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
