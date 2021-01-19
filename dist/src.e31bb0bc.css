@@ -26,6 +26,7 @@ body {
     --color-theme-4: #ed553b;
     --color-theme-5: #3CAEA3;
     --color-theme-6: #f6d55c;
+    --color-white: #fff;
     --color-gray-lightest: #dcdcdc;
     --color-gray-light: #999;
     --color-gray-medium: #666666;
@@ -44,12 +45,12 @@ body {
 }
 
 :root .theme--dark {
-    --color-background-default: #191919;
-    --color-header-background: #131313;
+    --color-background-default: #404351;
+    --color-header-background: #2E313D;
     --color-text-light: #fff;
     --color-text-dark: #000;
     --color-text-default: #d8d8d8;
-    --color-card: var( --color-gray-dark );
+    --color-card: #2E313D;
     --color-gray-icon: var( --color-gray-light );
 }
 
@@ -132,7 +133,7 @@ main.main {
 }
 
 .linkpage__name {
-    margin: 60px 20px 40px 20px;
+    margin: 50px 20px 50px 20px;
     font-size: 2rem;
     font-weight: 400;
     letter-spacing: 0.05rem;
@@ -210,14 +211,15 @@ main.main {
 .grid__title {
     display: inline-block;
     background: var( --color-background-default );
-    font-weight: 600;
+    font-weight: 500;
+    letter-spacing: 0.5px;
     padding: 0 40px;
-    margin: 30px 0 0 0;
 }
 
 @media ( max-width: 766px ) {
     .grid__title {
         padding: 0 20px;
+        margin: 30px 0 0 0;
     }
 }
 
@@ -297,6 +299,16 @@ main.main {
     margin: 0 40px 40px 0;
 }
 
+.grid--item-size-small .grid__item {
+    width: 96px;
+    margin: 0 20px 20px 0;
+}
+
+.grid--item-size-large .grid__item {
+    width: 192px;
+    margin: 0 40px 40px 0;
+}
+
 .grid__item--empty {
     border: 1px dashed rgba( 0, 0, 0, 0.1 );
 }
@@ -318,7 +330,9 @@ main.main {
     }
 }
 
-.grid__item--plus {
+.grid--item-size-small .grid__item--plus,
+.grid--item-size-medium .grid__item--plus,
+.grid--item-size-large .grid__item--plus {
     margin-left: auto;
 }
 
@@ -512,6 +526,11 @@ main.main {
     top: 15px;
 }
 
+.grid--item-size-small .card__favicon img {
+    width: 16px;
+    height: 16px;
+}
+
 .card__title {
     padding-bottom: 5px;
     transition: 0.2s;
@@ -626,16 +645,17 @@ main.main {
 
 .button--plus-wide {
     position: fixed;
-    bottom: 40px;
-    right: 40px;
+    bottom: 20px;
+    right: 20px;
     height: 45px;
-    padding: 10px 10px 10px 30px;
+    padding: 10px 15px 10px 35px;
     border-radius: 4px;
     background: linear-gradient(90deg, #3caea3, #20639b);
-    letter-spacing: 2px;
-    text-transform: uppercase; 
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 12px;
+    color: var( --color-gray-lightest );
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -654,13 +674,40 @@ main.main {
     content: "";
     width: 2px;
     height: 10px;
-    background: var( --color-text-default );
+    background: var( --color-white );
     position: absolute;
-    left: 15px;
+    left: 18px;
 }
 
 .button--plus-wide:after {
     transform: rotate( 90deg );
+}
+
+.button--plus-wide:hover {
+    filter: brightness( 90% );
+}
+
+.button--default {
+    width: 140px;
+    height: 40px;
+    margin: 0 6px;
+    text-transform: uppercase;
+    font-size: 11px;
+    border-radius: 4px;
+}
+
+.button--default:hover {
+    filter: brightness( 90% );
+}
+
+.button--confirm {
+    background: var( --color-theme-4 );
+    color: white;
+}
+
+.button--cancel {
+    border: 1px solid var( --color-gray-lightest );
+    color: var( --color-gray-light );
 }
 
 .modal {
@@ -809,6 +856,7 @@ input:after {
     background: var( --color-theme-2 );
     padding: 30px 20px;
     border-radius: 4px;
+    border: 1px solid black;
     opacity: 0;
     overflow: scroll;
 }
@@ -907,7 +955,7 @@ nav.header {
     width: 100%;
     height: 60px;
     background: var( --color-header-background );
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
 }
 
 .header__end {
@@ -915,7 +963,20 @@ nav.header {
 }
 
 .logo {
-    padding: 10px;
+    padding: 15px 10px 15px 15px;
+}
+
+.logo svg {
+    width: 30px;
+    height: 30px;
+}
+
+.theme--dark .logo svg .shp1 {
+    fill: var( --color-gray-dark );
+}
+
+.theme--dark .logo svg .shp1 {
+    fill: var( --color-gray-lightest );
 }
 
 .editable-text {
@@ -970,5 +1031,106 @@ nav.header {
     content: 'Sign In';
 }
 
+.ReactModal__Body--open {
+    overflow: hidden;
+}
+
+.modal-react__background {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var( --color-overlay );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-react {
+    display: inline-block;
+}
+
+.modal-react:focus {
+    outline: none;
+}
+
+.modal-react__inner {
+    width: 90vw;
+    max-width: 500px;
+    height: auto;
+    position: relative;
+    background: white;
+    border-radius: 3px;
+    padding: 20px;
+    text-align: center;
+}
+
+.modal-react__title {
+    margin-bottom: 20px;
+}
+
+.radio--link-size {
+    display: flex;
+    width: 33%;
+    align-items: center;
+    justify-content: center;
+}
+
+.radio__input {
+    display: none;
+}
+
+.radio--link-size .radio__label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    padding: 10px;
+    box-sizing: content-box;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+.radio--link-size .radio__label:before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    background: #f0f0f0;
+    border-radius: 2px;
+}
+
+
+.radio--link-size-medium .radio__label:before {
+    width: 30px;
+    height: 30px;
+}
+
+.radio--link-size-large .radio__label:before {
+    width: 40px;
+    height: 40px;
+}
+
+.radio--link-size .radio__input:checked + .radio__label {
+    background: var( --color-theme-5 );
+}
+
+.l-flex {
+    display: flex;
+}
+
+.l-flex--row {
+    flex-direction: row;
+}
+
+.l-flex--space-between {
+    justify-content: space-between;
+}
+
+.u-m-top-10 {
+    margin-top: 10px;
+}
 
 /*# sourceMappingURL=/src.e31bb0bc.css.map */

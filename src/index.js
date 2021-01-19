@@ -5,6 +5,8 @@ import Layout from './containers/layout/index'
 import { AppContextPersisted, AppContextPersistedProvider } from './contextPersisted'
 import { AppContextNonPersisted, AppContextNonPersistedProvider } from './contextNonPersisted'
 
+import Modal from 'react-modal';
+
 import './styles.css'
 
 if ( 'serviceWorker' in navigator ) {
@@ -17,6 +19,10 @@ if ( 'serviceWorker' in navigator ) {
 //     });
 // }
 
+const rootElement = document.getElementById("root");
+
+Modal.setAppElement(rootElement);
+
 const App = () => {
 
     return (
@@ -28,5 +34,4 @@ const App = () => {
     )
 }
 
-const rootElement = document.getElementById("root");
 ReactDOM.render(<App />, rootElement);

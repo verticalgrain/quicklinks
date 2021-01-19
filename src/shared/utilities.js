@@ -2,10 +2,10 @@ import React from 'react'
 import * as firebase from 'firebase/app';
 import { db } from '../firebase'
 
-export const generateUniqueId = () => {
+export const generateUniqueId = ( length ) => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let autoId = '';
-    for ( let i = 0; i < 20; i++ ) {
+    for ( let i = 0; i < length; i++ ) {
         autoId += chars.charAt( Math.floor( Math.random() * chars.length ) )
     }
     return autoId;
@@ -115,7 +115,7 @@ export const updateLinkPage = ( linkPageId, dataNew ) => {
  */
 export const createSubCollection = ( linkPageData, callback ) => {
     // Create unique collectionId
-    const collectionId = generateUniqueId();
+    const collectionId = generateUniqueId( 20 );
     // Create linkGroup object
     const subCollection = {
         parentLinkGroupId: collectionId,
@@ -185,7 +185,6 @@ export const deleteLink = ( dataCurrent, href ) => {
     updateLinkGroup( dataCurrent.parentLinkPageId, dataCurrent.parentLinkGroupId, dataCurrent.id, dataNew )
 }
 
-
 export const reorder = ( list, startIndex, endIndex ) => {
     const result = Array.from( list );
     const [ removed ] = result.splice( startIndex, 1 );
@@ -194,6 +193,7 @@ export const reorder = ( list, startIndex, endIndex ) => {
     return result;
 };
 
+export const randomString = [...Array(6)].map(i=>(~~(Math.random()*36)).toString(36)).join('');
 
 ///////////////////////// OLD STUFF PROBS DELETEs //////////////////////////
 

@@ -98345,7 +98345,7 @@ module.exports = firebase;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.fireBaseGetLinkgroups = exports.fireBaseGet = exports.fireBaseSnapshotDocument = exports.fireBaseGet1 = exports.reorder = exports.deleteLink = exports.deleteLinkGroup = exports.createSubCollection = exports.updateLinkPage = exports.updateLinkGroup = exports.listSubCollections = exports.currentUserIsOwner = exports.fireBaseQuery = exports.convertSpinalCase = exports.generateUniqueId = void 0;
+exports.fireBaseGetLinkgroups = exports.fireBaseGet = exports.fireBaseSnapshotDocument = exports.fireBaseGet1 = exports.randomString = exports.reorder = exports.deleteLink = exports.deleteLinkGroup = exports.createSubCollection = exports.updateLinkPage = exports.updateLinkGroup = exports.listSubCollections = exports.currentUserIsOwner = exports.fireBaseQuery = exports.convertSpinalCase = exports.generateUniqueId = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
@@ -98358,6 +98358,14 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
@@ -98377,11 +98385,11 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var generateUniqueId = function generateUniqueId() {
+var generateUniqueId = function generateUniqueId(length) {
   var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   var autoId = '';
 
-  for (var i = 0; i < 20; i++) {
+  for (var i = 0; i < length; i++) {
     autoId += chars.charAt(Math.floor(Math.random() * chars.length));
   }
 
@@ -98503,7 +98511,7 @@ exports.updateLinkPage = updateLinkPage;
 
 var createSubCollection = function createSubCollection(linkPageData, callback) {
   // Create unique collectionId
-  var collectionId = generateUniqueId(); // Create linkGroup object
+  var collectionId = generateUniqueId(20); // Create linkGroup object
 
   var subCollection = {
     parentLinkGroupId: collectionId,
@@ -98588,10 +98596,16 @@ var reorder = function reorder(list, startIndex, endIndex) {
 
   result.splice(endIndex, 0, removed);
   return result;
-}; ///////////////////////// OLD STUFF PROBS DELETEs //////////////////////////
-
+};
 
 exports.reorder = reorder;
+
+var randomString = _toConsumableArray(Array(6)).map(function (i) {
+  return (~~(Math.random() * 36)).toString(36);
+}).join(''); ///////////////////////// OLD STUFF PROBS DELETEs //////////////////////////
+
+
+exports.randomString = randomString;
 
 var fireBaseGet1 = function fireBaseGet1(collectionName, fieldName) {
   var condition = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '==';
@@ -110487,9 +110501,9 @@ var Link = function Link(_ref) {
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "card__favicon"
   }, /*#__PURE__*/_react.default.createElement("img", {
-    src: 'https://s2.googleusercontent.com/s2/favicons?domain=' + href,
-    width: "16",
-    height: "16"
+    src: 'https://www.google.com/s2/favicons?sz=32&domain_url=' + href,
+    width: "32",
+    height: "32"
   })), /*#__PURE__*/_react.default.createElement("div", {
     className: "card__title"
   }, title), /*#__PURE__*/_react.default.createElement("div", {
@@ -110684,7 +110698,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var AppContextPersisted = _react.default.createContext({
   theme: 'dark',
-  linkTargetBlank: true
+  linkTargetBlank: true,
+  linkCardSize: 'medium'
 });
 
 exports.AppContextPersisted = AppContextPersisted;
@@ -110694,7 +110709,8 @@ var AppContextPersistedProvider = function AppContextPersistedProvider(_ref) {
 
   var _useState = (0, _react.useState)(JSON.parse(localStorage.getItem('appLocalstoragePersisted')) || {
     theme: 'dark',
-    linkTargetBlank: true
+    linkTargetBlank: true,
+    linkCardSize: 'medium'
   }),
       _useState2 = _slicedToArray(_useState, 2),
       appStatePersisted = _useState2[0],
@@ -110755,7 +110771,1617 @@ var useStickyState = function useStickyState(defaultValue, key) {
 };
 
 exports.useStickyState = useStickyState;
-},{"react":"../node_modules/react/index.js"}],"components/link-group/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js"}],"../node_modules/react-modal/lib/helpers/tabbable.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = findTabbableDescendants;
+/*!
+ * Adapted from jQuery UI core
+ *
+ * http://jqueryui.com
+ *
+ * Copyright 2014 jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * http://api.jqueryui.com/category/ui-core/
+ */
+
+var tabbableNode = /input|select|textarea|button|object/;
+
+function hidesContents(element) {
+  var zeroSize = element.offsetWidth <= 0 && element.offsetHeight <= 0;
+
+  // If the node is empty, this is good enough
+  if (zeroSize && !element.innerHTML) return true;
+
+  // Otherwise we need to check some styles
+  var style = window.getComputedStyle(element);
+  return zeroSize ? style.getPropertyValue("overflow") !== "visible" ||
+  // if 'overflow: visible' set, check if there is actually any overflow
+  element.scrollWidth <= 0 && element.scrollHeight <= 0 : style.getPropertyValue("display") == "none";
+}
+
+function visible(element) {
+  var parentElement = element;
+  while (parentElement) {
+    if (parentElement === document.body) break;
+    if (hidesContents(parentElement)) return false;
+    parentElement = parentElement.parentNode;
+  }
+  return true;
+}
+
+function focusable(element, isTabIndexNotNaN) {
+  var nodeName = element.nodeName.toLowerCase();
+  var res = tabbableNode.test(nodeName) && !element.disabled || (nodeName === "a" ? element.href || isTabIndexNotNaN : isTabIndexNotNaN);
+  return res && visible(element);
+}
+
+function tabbable(element) {
+  var tabIndex = element.getAttribute("tabindex");
+  if (tabIndex === null) tabIndex = undefined;
+  var isTabIndexNaN = isNaN(tabIndex);
+  return (isTabIndexNaN || tabIndex >= 0) && focusable(element, !isTabIndexNaN);
+}
+
+function findTabbableDescendants(element) {
+  return [].slice.call(element.querySelectorAll("*"), 0).filter(tabbable);
+}
+module.exports = exports["default"];
+},{}],"../node_modules/react-modal/lib/helpers/focusManager.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.handleBlur = handleBlur;
+exports.handleFocus = handleFocus;
+exports.markForFocusLater = markForFocusLater;
+exports.returnFocus = returnFocus;
+exports.popWithoutFocus = popWithoutFocus;
+exports.setupScopedFocus = setupScopedFocus;
+exports.teardownScopedFocus = teardownScopedFocus;
+
+var _tabbable = require("../helpers/tabbable");
+
+var _tabbable2 = _interopRequireDefault(_tabbable);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var focusLaterElements = [];
+var modalElement = null;
+var needToFocus = false;
+
+function handleBlur() {
+  needToFocus = true;
+}
+
+function handleFocus() {
+  if (needToFocus) {
+    needToFocus = false;
+    if (!modalElement) {
+      return;
+    }
+    // need to see how jQuery shims document.on('focusin') so we don't need the
+    // setTimeout, firefox doesn't support focusin, if it did, we could focus
+    // the element outside of a setTimeout. Side-effect of this implementation
+    // is that the document.body gets focus, and then we focus our element right
+    // after, seems fine.
+    setTimeout(function () {
+      if (modalElement.contains(document.activeElement)) {
+        return;
+      }
+      var el = (0, _tabbable2.default)(modalElement)[0] || modalElement;
+      el.focus();
+    }, 0);
+  }
+}
+
+function markForFocusLater() {
+  focusLaterElements.push(document.activeElement);
+}
+
+/* eslint-disable no-console */
+function returnFocus() {
+  var toFocus = null;
+  try {
+    if (focusLaterElements.length !== 0) {
+      toFocus = focusLaterElements.pop();
+      toFocus.focus();
+    }
+    return;
+  } catch (e) {
+    console.warn(["You tried to return focus to", toFocus, "but it is not in the DOM anymore"].join(" "));
+  }
+}
+/* eslint-enable no-console */
+
+function popWithoutFocus() {
+  focusLaterElements.length > 0 && focusLaterElements.pop();
+}
+
+function setupScopedFocus(element) {
+  modalElement = element;
+
+  if (window.addEventListener) {
+    window.addEventListener("blur", handleBlur, false);
+    document.addEventListener("focus", handleFocus, true);
+  } else {
+    window.attachEvent("onBlur", handleBlur);
+    document.attachEvent("onFocus", handleFocus);
+  }
+}
+
+function teardownScopedFocus() {
+  modalElement = null;
+
+  if (window.addEventListener) {
+    window.removeEventListener("blur", handleBlur);
+    document.removeEventListener("focus", handleFocus);
+  } else {
+    window.detachEvent("onBlur", handleBlur);
+    document.detachEvent("onFocus", handleFocus);
+  }
+}
+},{"../helpers/tabbable":"../node_modules/react-modal/lib/helpers/tabbable.js"}],"../node_modules/react-modal/lib/helpers/scopeTab.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = scopeTab;
+
+var _tabbable = require("./tabbable");
+
+var _tabbable2 = _interopRequireDefault(_tabbable);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function scopeTab(node, event) {
+  var tabbable = (0, _tabbable2.default)(node);
+
+  if (!tabbable.length) {
+    // Do nothing, since there are no elements that can receive focus.
+    event.preventDefault();
+    return;
+  }
+
+  var target = void 0;
+
+  var shiftKey = event.shiftKey;
+  var head = tabbable[0];
+  var tail = tabbable[tabbable.length - 1];
+
+  // proceed with default browser behavior on tab.
+  // Focus on last element on shift + tab.
+  if (node === document.activeElement) {
+    if (!shiftKey) return;
+    target = tail;
+  }
+
+  if (tail === document.activeElement && !shiftKey) {
+    target = head;
+  }
+
+  if (head === document.activeElement && shiftKey) {
+    target = tail;
+  }
+
+  if (target) {
+    event.preventDefault();
+    target.focus();
+    return;
+  }
+
+  // Safari radio issue.
+  //
+  // Safari does not move the focus to the radio button,
+  // so we need to force it to really walk through all elements.
+  //
+  // This is very error prone, since we are trying to guess
+  // if it is a safari browser from the first occurence between
+  // chrome or safari.
+  //
+  // The chrome user agent contains the first ocurrence
+  // as the 'chrome/version' and later the 'safari/version'.
+  var checkSafari = /(\bChrome\b|\bSafari\b)\//.exec(navigator.userAgent);
+  var isSafariDesktop = checkSafari != null && checkSafari[1] != "Chrome" && /\biPod\b|\biPad\b/g.exec(navigator.userAgent) == null;
+
+  // If we are not in safari desktop, let the browser control
+  // the focus
+  if (!isSafariDesktop) return;
+
+  var x = tabbable.indexOf(document.activeElement);
+
+  if (x > -1) {
+    x += shiftKey ? -1 : 1;
+  }
+
+  target = tabbable[x];
+
+  // If the tabbable element does not exist,
+  // focus head/tail based on shiftKey
+  if (typeof target === "undefined") {
+    event.preventDefault();
+    target = shiftKey ? tail : head;
+    target.focus();
+    return;
+  }
+
+  event.preventDefault();
+
+  target.focus();
+}
+module.exports = exports["default"];
+},{"./tabbable":"../node_modules/react-modal/lib/helpers/tabbable.js"}],"../node_modules/warning/warning.js":[function(require,module,exports) {
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+'use strict';
+/**
+ * Similar to invariant but only logs a warning if the condition is not met.
+ * This can be used to log issues in development environments in critical
+ * paths. Removing the logging code for production environments will keep the
+ * same logic and follow the same code paths.
+ */
+
+var __DEV__ = "development" !== 'production';
+
+var warning = function () {};
+
+if (__DEV__) {
+  var printWarning = function printWarning(format, args) {
+    var len = arguments.length;
+    args = new Array(len > 1 ? len - 1 : 0);
+
+    for (var key = 1; key < len; key++) {
+      args[key - 1] = arguments[key];
+    }
+
+    var argIndex = 0;
+    var message = 'Warning: ' + format.replace(/%s/g, function () {
+      return args[argIndex++];
+    });
+
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+
+  warning = function (condition, format, args) {
+    var len = arguments.length;
+    args = new Array(len > 2 ? len - 2 : 0);
+
+    for (var key = 2; key < len; key++) {
+      args[key - 2] = arguments[key];
+    }
+
+    if (format === undefined) {
+      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+    }
+
+    if (!condition) {
+      printWarning.apply(null, [format].concat(args));
+    }
+  };
+}
+
+module.exports = warning;
+},{}],"../node_modules/exenv/index.js":[function(require,module,exports) {
+var define;
+/*!
+  Copyright (c) 2015 Jed Watson.
+  Based on code that is Copyright 2013-2015, Facebook, Inc.
+  All rights reserved.
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var canUseDOM = !!(
+		typeof window !== 'undefined' &&
+		window.document &&
+		window.document.createElement
+	);
+
+	var ExecutionEnvironment = {
+
+		canUseDOM: canUseDOM,
+
+		canUseWorkers: typeof Worker !== 'undefined',
+
+		canUseEventListeners:
+			canUseDOM && !!(window.addEventListener || window.attachEvent),
+
+		canUseViewport: canUseDOM && !!window.screen
+
+	};
+
+	if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
+		define(function () {
+			return ExecutionEnvironment;
+		});
+	} else if (typeof module !== 'undefined' && module.exports) {
+		module.exports = ExecutionEnvironment;
+	} else {
+		window.ExecutionEnvironment = ExecutionEnvironment;
+	}
+
+}());
+
+},{}],"../node_modules/react-modal/lib/helpers/safeHTMLElement.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.canUseDOM = undefined;
+
+var _exenv = require("exenv");
+
+var _exenv2 = _interopRequireDefault(_exenv);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var EE = _exenv2.default;
+
+var SafeHTMLElement = EE.canUseDOM ? window.HTMLElement : {};
+
+var canUseDOM = exports.canUseDOM = EE.canUseDOM;
+
+exports.default = SafeHTMLElement;
+},{"exenv":"../node_modules/exenv/index.js"}],"../node_modules/react-modal/lib/helpers/ariaAppHider.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.assertNodeList = assertNodeList;
+exports.setElement = setElement;
+exports.validateElement = validateElement;
+exports.hide = hide;
+exports.show = show;
+exports.documentNotReadyOrSSRTesting = documentNotReadyOrSSRTesting;
+exports.resetForTesting = resetForTesting;
+
+var _warning = require("warning");
+
+var _warning2 = _interopRequireDefault(_warning);
+
+var _safeHTMLElement = require("./safeHTMLElement");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var globalElement = null;
+
+function assertNodeList(nodeList, selector) {
+  if (!nodeList || !nodeList.length) {
+    throw new Error("react-modal: No elements were found for selector " + selector + ".");
+  }
+}
+
+function setElement(element) {
+  var useElement = element;
+  if (typeof useElement === "string" && _safeHTMLElement.canUseDOM) {
+    var el = document.querySelectorAll(useElement);
+    assertNodeList(el, useElement);
+    useElement = "length" in el ? el[0] : el;
+  }
+  globalElement = useElement || globalElement;
+  return globalElement;
+}
+
+function validateElement(appElement) {
+  if (!appElement && !globalElement) {
+    (0, _warning2.default)(false, ["react-modal: App element is not defined.", "Please use `Modal.setAppElement(el)` or set `appElement={el}`.", "This is needed so screen readers don't see main content", "when modal is opened. It is not recommended, but you can opt-out", "by setting `ariaHideApp={false}`."].join(" "));
+
+    return false;
+  }
+
+  return true;
+}
+
+function hide(appElement) {
+  if (validateElement(appElement)) {
+    (appElement || globalElement).setAttribute("aria-hidden", "true");
+  }
+}
+
+function show(appElement) {
+  if (validateElement(appElement)) {
+    (appElement || globalElement).removeAttribute("aria-hidden");
+  }
+}
+
+function documentNotReadyOrSSRTesting() {
+  globalElement = null;
+}
+
+function resetForTesting() {
+  globalElement = null;
+}
+},{"warning":"../node_modules/warning/warning.js","./safeHTMLElement":"../node_modules/react-modal/lib/helpers/safeHTMLElement.js"}],"../node_modules/react-modal/lib/helpers/classList.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.dumpClassLists = dumpClassLists;
+var htmlClassList = {};
+var docBodyClassList = {};
+
+function dumpClassLists() {
+  if ("development" !== "production") {
+    var classes = document.getElementsByTagName("html")[0].className;
+    var buffer = "Show tracked classes:\n\n";
+    buffer += "<html /> (" + classes + "):\n";
+
+    for (var x in htmlClassList) {
+      buffer += "  " + x + " " + htmlClassList[x] + "\n";
+    }
+
+    classes = document.body.className; // eslint-disable-next-line max-len
+
+    buffer += "\n\ndoc.body (" + classes + "):\n";
+
+    for (var _x in docBodyClassList) {
+      buffer += "  " + _x + " " + docBodyClassList[_x] + "\n";
+    }
+
+    buffer += "\n"; // eslint-disable-next-line no-console
+
+    console.log(buffer);
+  }
+}
+/**
+ * Track the number of reference of a class.
+ * @param {object} poll The poll to receive the reference.
+ * @param {string} className The class name.
+ * @return {string}
+ */
+
+
+var incrementReference = function incrementReference(poll, className) {
+  if (!poll[className]) {
+    poll[className] = 0;
+  }
+
+  poll[className] += 1;
+  return className;
+};
+/**
+ * Drop the reference of a class.
+ * @param {object} poll The poll to receive the reference.
+ * @param {string} className The class name.
+ * @return {string}
+ */
+
+
+var decrementReference = function decrementReference(poll, className) {
+  if (poll[className]) {
+    poll[className] -= 1;
+  }
+
+  return className;
+};
+/**
+ * Track a class and add to the given class list.
+ * @param {Object} classListRef A class list of an element.
+ * @param {Object} poll         The poll to be used.
+ * @param {Array}  classes      The list of classes to be tracked.
+ */
+
+
+var trackClass = function trackClass(classListRef, poll, classes) {
+  classes.forEach(function (className) {
+    incrementReference(poll, className);
+    classListRef.add(className);
+  });
+};
+/**
+ * Untrack a class and remove from the given class list if the reference
+ * reaches 0.
+ * @param {Object} classListRef A class list of an element.
+ * @param {Object} poll         The poll to be used.
+ * @param {Array}  classes      The list of classes to be untracked.
+ */
+
+
+var untrackClass = function untrackClass(classListRef, poll, classes) {
+  classes.forEach(function (className) {
+    decrementReference(poll, className);
+    poll[className] === 0 && classListRef.remove(className);
+  });
+};
+/**
+ * Public inferface to add classes to the document.body.
+ * @param {string} bodyClass The class string to be added.
+ *                           It may contain more then one class
+ *                           with ' ' as separator.
+ */
+
+
+var add = exports.add = function add(element, classString) {
+  return trackClass(element.classList, element.nodeName.toLowerCase() == "html" ? htmlClassList : docBodyClassList, classString.split(" "));
+};
+/**
+ * Public inferface to remove classes from the document.body.
+ * @param {string} bodyClass The class string to be added.
+ *                           It may contain more then one class
+ *                           with ' ' as separator.
+ */
+
+
+var remove = exports.remove = function remove(element, classString) {
+  return untrackClass(element.classList, element.nodeName.toLowerCase() == "html" ? htmlClassList : docBodyClassList, classString.split(" "));
+};
+},{}],"../node_modules/react-modal/lib/helpers/portalOpenInstances.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+} // Tracks portals that are open and emits events to subscribers
+
+
+var PortalOpenInstances = function PortalOpenInstances() {
+  var _this = this;
+
+  _classCallCheck(this, PortalOpenInstances);
+
+  this.register = function (openInstance) {
+    if (_this.openInstances.indexOf(openInstance) !== -1) {
+      if ("development" !== "production") {
+        // eslint-disable-next-line no-console
+        console.warn("React-Modal: Cannot register modal instance that's already open");
+      }
+
+      return;
+    }
+
+    _this.openInstances.push(openInstance);
+
+    _this.emit("register");
+  };
+
+  this.deregister = function (openInstance) {
+    var index = _this.openInstances.indexOf(openInstance);
+
+    if (index === -1) {
+      if ("development" !== "production") {
+        // eslint-disable-next-line no-console
+        console.warn("React-Modal: Unable to deregister " + openInstance + " as " + "it was never registered");
+      }
+
+      return;
+    }
+
+    _this.openInstances.splice(index, 1);
+
+    _this.emit("deregister");
+  };
+
+  this.subscribe = function (callback) {
+    _this.subscribers.push(callback);
+  };
+
+  this.emit = function (eventType) {
+    _this.subscribers.forEach(function (subscriber) {
+      return subscriber(eventType, // shallow copy to avoid accidental mutation
+      _this.openInstances.slice());
+    });
+  };
+
+  this.openInstances = [];
+  this.subscribers = [];
+};
+
+var portalOpenInstances = new PortalOpenInstances();
+exports.default = portalOpenInstances;
+module.exports = exports["default"];
+},{}],"../node_modules/react-modal/lib/helpers/bodyTrap.js":[function(require,module,exports) {
+"use strict";
+
+var _portalOpenInstances = require("./portalOpenInstances");
+
+var _portalOpenInstances2 = _interopRequireDefault(_portalOpenInstances);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+} // Body focus trap see Issue #742
+
+
+var before = void 0,
+    after = void 0,
+    instances = [];
+
+function focusContent() {
+  if (instances.length === 0) {
+    if ("development" !== "production") {
+      // eslint-disable-next-line no-console
+      console.warn("React-Modal: Open instances > 0 expected");
+    }
+
+    return;
+  }
+
+  instances[instances.length - 1].focusContent();
+}
+
+function bodyTrap(eventType, openInstances) {
+  if (!before || !after) {
+    before = document.createElement("div");
+    before.setAttribute("data-react-modal-body-trap", "");
+    before.style.position = "absolute";
+    before.style.opacity = "0";
+    before.setAttribute("tabindex", "0");
+    before.addEventListener("focus", focusContent);
+    after = before.cloneNode();
+    after.addEventListener("focus", focusContent);
+  }
+
+  instances = openInstances;
+
+  if (instances.length > 0) {
+    // Add focus trap
+    if (document.body.firstChild !== before) {
+      document.body.insertBefore(before, document.body.firstChild);
+    }
+
+    if (document.body.lastChild !== after) {
+      document.body.appendChild(after);
+    }
+  } else {
+    // Remove focus trap
+    if (before.parentElement) {
+      before.parentElement.removeChild(before);
+    }
+
+    if (after.parentElement) {
+      after.parentElement.removeChild(after);
+    }
+  }
+}
+
+_portalOpenInstances2.default.subscribe(bodyTrap);
+},{"./portalOpenInstances":"../node_modules/react-modal/lib/helpers/portalOpenInstances.js"}],"../node_modules/react-modal/lib/components/ModalPortal.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+};
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+}();
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require("prop-types");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _focusManager = require("../helpers/focusManager");
+
+var focusManager = _interopRequireWildcard(_focusManager);
+
+var _scopeTab = require("../helpers/scopeTab");
+
+var _scopeTab2 = _interopRequireDefault(_scopeTab);
+
+var _ariaAppHider = require("../helpers/ariaAppHider");
+
+var ariaAppHider = _interopRequireWildcard(_ariaAppHider);
+
+var _classList = require("../helpers/classList");
+
+var classList = _interopRequireWildcard(_classList);
+
+var _safeHTMLElement = require("../helpers/safeHTMLElement");
+
+var _safeHTMLElement2 = _interopRequireDefault(_safeHTMLElement);
+
+var _portalOpenInstances = require("../helpers/portalOpenInstances");
+
+var _portalOpenInstances2 = _interopRequireDefault(_portalOpenInstances);
+
+require("../helpers/bodyTrap");
+
+function _interopRequireWildcard(obj) {
+  if (obj && obj.__esModule) {
+    return obj;
+  } else {
+    var newObj = {};
+
+    if (obj != null) {
+      for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+      }
+    }
+
+    newObj.default = obj;
+    return newObj;
+  }
+}
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return call && (typeof call === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+} // so that our CSS is statically analyzable
+
+
+var CLASS_NAMES = {
+  overlay: "ReactModal__Overlay",
+  content: "ReactModal__Content"
+};
+var TAB_KEY = 9;
+var ESC_KEY = 27;
+var ariaHiddenInstances = 0;
+
+var ModalPortal = function (_Component) {
+  _inherits(ModalPortal, _Component);
+
+  function ModalPortal(props) {
+    _classCallCheck(this, ModalPortal);
+
+    var _this = _possibleConstructorReturn(this, (ModalPortal.__proto__ || Object.getPrototypeOf(ModalPortal)).call(this, props));
+
+    _this.setOverlayRef = function (overlay) {
+      _this.overlay = overlay;
+      _this.props.overlayRef && _this.props.overlayRef(overlay);
+    };
+
+    _this.setContentRef = function (content) {
+      _this.content = content;
+      _this.props.contentRef && _this.props.contentRef(content);
+    };
+
+    _this.afterClose = function () {
+      var _this$props = _this.props,
+          appElement = _this$props.appElement,
+          ariaHideApp = _this$props.ariaHideApp,
+          htmlOpenClassName = _this$props.htmlOpenClassName,
+          bodyOpenClassName = _this$props.bodyOpenClassName; // Remove classes.
+
+      bodyOpenClassName && classList.remove(document.body, bodyOpenClassName);
+      htmlOpenClassName && classList.remove(document.getElementsByTagName("html")[0], htmlOpenClassName); // Reset aria-hidden attribute if all modals have been removed
+
+      if (ariaHideApp && ariaHiddenInstances > 0) {
+        ariaHiddenInstances -= 1;
+
+        if (ariaHiddenInstances === 0) {
+          ariaAppHider.show(appElement);
+        }
+      }
+
+      if (_this.props.shouldFocusAfterRender) {
+        if (_this.props.shouldReturnFocusAfterClose) {
+          focusManager.returnFocus();
+          focusManager.teardownScopedFocus();
+        } else {
+          focusManager.popWithoutFocus();
+        }
+      }
+
+      if (_this.props.onAfterClose) {
+        _this.props.onAfterClose();
+      }
+
+      _portalOpenInstances2.default.deregister(_this);
+    };
+
+    _this.open = function () {
+      _this.beforeOpen();
+
+      if (_this.state.afterOpen && _this.state.beforeClose) {
+        clearTimeout(_this.closeTimer);
+
+        _this.setState({
+          beforeClose: false
+        });
+      } else {
+        if (_this.props.shouldFocusAfterRender) {
+          focusManager.setupScopedFocus(_this.node);
+          focusManager.markForFocusLater();
+        }
+
+        _this.setState({
+          isOpen: true
+        }, function () {
+          _this.setState({
+            afterOpen: true
+          });
+
+          if (_this.props.isOpen && _this.props.onAfterOpen) {
+            _this.props.onAfterOpen({
+              overlayEl: _this.overlay,
+              contentEl: _this.content
+            });
+          }
+        });
+      }
+    };
+
+    _this.close = function () {
+      if (_this.props.closeTimeoutMS > 0) {
+        _this.closeWithTimeout();
+      } else {
+        _this.closeWithoutTimeout();
+      }
+    };
+
+    _this.focusContent = function () {
+      return _this.content && !_this.contentHasFocus() && _this.content.focus();
+    };
+
+    _this.closeWithTimeout = function () {
+      var closesAt = Date.now() + _this.props.closeTimeoutMS;
+
+      _this.setState({
+        beforeClose: true,
+        closesAt: closesAt
+      }, function () {
+        _this.closeTimer = setTimeout(_this.closeWithoutTimeout, _this.state.closesAt - Date.now());
+      });
+    };
+
+    _this.closeWithoutTimeout = function () {
+      _this.setState({
+        beforeClose: false,
+        isOpen: false,
+        afterOpen: false,
+        closesAt: null
+      }, _this.afterClose);
+    };
+
+    _this.handleKeyDown = function (event) {
+      if (event.keyCode === TAB_KEY) {
+        (0, _scopeTab2.default)(_this.content, event);
+      }
+
+      if (_this.props.shouldCloseOnEsc && event.keyCode === ESC_KEY) {
+        event.stopPropagation();
+
+        _this.requestClose(event);
+      }
+    };
+
+    _this.handleOverlayOnClick = function (event) {
+      if (_this.shouldClose === null) {
+        _this.shouldClose = true;
+      }
+
+      if (_this.shouldClose && _this.props.shouldCloseOnOverlayClick) {
+        if (_this.ownerHandlesClose()) {
+          _this.requestClose(event);
+        } else {
+          _this.focusContent();
+        }
+      }
+
+      _this.shouldClose = null;
+    };
+
+    _this.handleContentOnMouseUp = function () {
+      _this.shouldClose = false;
+    };
+
+    _this.handleOverlayOnMouseDown = function (event) {
+      if (!_this.props.shouldCloseOnOverlayClick && event.target == _this.overlay) {
+        event.preventDefault();
+      }
+    };
+
+    _this.handleContentOnClick = function () {
+      _this.shouldClose = false;
+    };
+
+    _this.handleContentOnMouseDown = function () {
+      _this.shouldClose = false;
+    };
+
+    _this.requestClose = function (event) {
+      return _this.ownerHandlesClose() && _this.props.onRequestClose(event);
+    };
+
+    _this.ownerHandlesClose = function () {
+      return _this.props.onRequestClose;
+    };
+
+    _this.shouldBeClosed = function () {
+      return !_this.state.isOpen && !_this.state.beforeClose;
+    };
+
+    _this.contentHasFocus = function () {
+      return document.activeElement === _this.content || _this.content.contains(document.activeElement);
+    };
+
+    _this.buildClassName = function (which, additional) {
+      var classNames = (typeof additional === "undefined" ? "undefined" : _typeof(additional)) === "object" ? additional : {
+        base: CLASS_NAMES[which],
+        afterOpen: CLASS_NAMES[which] + "--after-open",
+        beforeClose: CLASS_NAMES[which] + "--before-close"
+      };
+      var className = classNames.base;
+
+      if (_this.state.afterOpen) {
+        className = className + " " + classNames.afterOpen;
+      }
+
+      if (_this.state.beforeClose) {
+        className = className + " " + classNames.beforeClose;
+      }
+
+      return typeof additional === "string" && additional ? className + " " + additional : className;
+    };
+
+    _this.attributesFromObject = function (prefix, items) {
+      return Object.keys(items).reduce(function (acc, name) {
+        acc[prefix + "-" + name] = items[name];
+        return acc;
+      }, {});
+    };
+
+    _this.state = {
+      afterOpen: false,
+      beforeClose: false
+    };
+    _this.shouldClose = null;
+    _this.moveFromContentToOverlay = null;
+    return _this;
+  }
+
+  _createClass(ModalPortal, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      if (this.props.isOpen) {
+        this.open();
+      }
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps, prevState) {
+      if ("development" !== "production") {
+        if (prevProps.bodyOpenClassName !== this.props.bodyOpenClassName) {
+          // eslint-disable-next-line no-console
+          console.warn('React-Modal: "bodyOpenClassName" prop has been modified. ' + "This may cause unexpected behavior when multiple modals are open.");
+        }
+
+        if (prevProps.htmlOpenClassName !== this.props.htmlOpenClassName) {
+          // eslint-disable-next-line no-console
+          console.warn('React-Modal: "htmlOpenClassName" prop has been modified. ' + "This may cause unexpected behavior when multiple modals are open.");
+        }
+      }
+
+      if (this.props.isOpen && !prevProps.isOpen) {
+        this.open();
+      } else if (!this.props.isOpen && prevProps.isOpen) {
+        this.close();
+      } // Focus only needs to be set once when the modal is being opened
+
+
+      if (this.props.shouldFocusAfterRender && this.state.isOpen && !prevState.isOpen) {
+        this.focusContent();
+      }
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      if (this.state.isOpen) {
+        this.afterClose();
+      }
+
+      clearTimeout(this.closeTimer);
+    }
+  }, {
+    key: "beforeOpen",
+    value: function beforeOpen() {
+      var _props = this.props,
+          appElement = _props.appElement,
+          ariaHideApp = _props.ariaHideApp,
+          htmlOpenClassName = _props.htmlOpenClassName,
+          bodyOpenClassName = _props.bodyOpenClassName; // Add classes.
+
+      bodyOpenClassName && classList.add(document.body, bodyOpenClassName);
+      htmlOpenClassName && classList.add(document.getElementsByTagName("html")[0], htmlOpenClassName);
+
+      if (ariaHideApp) {
+        ariaHiddenInstances += 1;
+        ariaAppHider.hide(appElement);
+      }
+
+      _portalOpenInstances2.default.register(this);
+    } // Don't steal focus from inner elements
+
+  }, {
+    key: "render",
+    value: function render() {
+      var _props2 = this.props,
+          id = _props2.id,
+          className = _props2.className,
+          overlayClassName = _props2.overlayClassName,
+          defaultStyles = _props2.defaultStyles;
+      var contentStyles = className ? {} : defaultStyles.content;
+      var overlayStyles = overlayClassName ? {} : defaultStyles.overlay;
+      return this.shouldBeClosed() ? null : _react2.default.createElement("div", {
+        ref: this.setOverlayRef,
+        className: this.buildClassName("overlay", overlayClassName),
+        style: _extends({}, overlayStyles, this.props.style.overlay),
+        onClick: this.handleOverlayOnClick,
+        onMouseDown: this.handleOverlayOnMouseDown
+      }, _react2.default.createElement("div", _extends({
+        id: id,
+        ref: this.setContentRef,
+        style: _extends({}, contentStyles, this.props.style.content),
+        className: this.buildClassName("content", className),
+        tabIndex: "-1",
+        onKeyDown: this.handleKeyDown,
+        onMouseDown: this.handleContentOnMouseDown,
+        onMouseUp: this.handleContentOnMouseUp,
+        onClick: this.handleContentOnClick,
+        role: this.props.role,
+        "aria-label": this.props.contentLabel
+      }, this.attributesFromObject("aria", this.props.aria || {}), this.attributesFromObject("data", this.props.data || {}), {
+        "data-testid": this.props.testId
+      }), this.props.children));
+    }
+  }]);
+
+  return ModalPortal;
+}(_react.Component);
+
+ModalPortal.defaultProps = {
+  style: {
+    overlay: {},
+    content: {}
+  },
+  defaultStyles: {}
+};
+ModalPortal.propTypes = {
+  isOpen: _propTypes2.default.bool.isRequired,
+  defaultStyles: _propTypes2.default.shape({
+    content: _propTypes2.default.object,
+    overlay: _propTypes2.default.object
+  }),
+  style: _propTypes2.default.shape({
+    content: _propTypes2.default.object,
+    overlay: _propTypes2.default.object
+  }),
+  className: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]),
+  overlayClassName: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]),
+  bodyOpenClassName: _propTypes2.default.string,
+  htmlOpenClassName: _propTypes2.default.string,
+  ariaHideApp: _propTypes2.default.bool,
+  appElement: _propTypes2.default.instanceOf(_safeHTMLElement2.default),
+  onAfterOpen: _propTypes2.default.func,
+  onAfterClose: _propTypes2.default.func,
+  onRequestClose: _propTypes2.default.func,
+  closeTimeoutMS: _propTypes2.default.number,
+  shouldFocusAfterRender: _propTypes2.default.bool,
+  shouldCloseOnOverlayClick: _propTypes2.default.bool,
+  shouldReturnFocusAfterClose: _propTypes2.default.bool,
+  role: _propTypes2.default.string,
+  contentLabel: _propTypes2.default.string,
+  aria: _propTypes2.default.object,
+  data: _propTypes2.default.object,
+  children: _propTypes2.default.node,
+  shouldCloseOnEsc: _propTypes2.default.bool,
+  overlayRef: _propTypes2.default.func,
+  contentRef: _propTypes2.default.func,
+  id: _propTypes2.default.string,
+  testId: _propTypes2.default.string
+};
+exports.default = ModalPortal;
+module.exports = exports["default"];
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","../helpers/focusManager":"../node_modules/react-modal/lib/helpers/focusManager.js","../helpers/scopeTab":"../node_modules/react-modal/lib/helpers/scopeTab.js","../helpers/ariaAppHider":"../node_modules/react-modal/lib/helpers/ariaAppHider.js","../helpers/classList":"../node_modules/react-modal/lib/helpers/classList.js","../helpers/safeHTMLElement":"../node_modules/react-modal/lib/helpers/safeHTMLElement.js","../helpers/portalOpenInstances":"../node_modules/react-modal/lib/helpers/portalOpenInstances.js","../helpers/bodyTrap":"../node_modules/react-modal/lib/helpers/bodyTrap.js"}],"../node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.polyfill = polyfill;
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+function componentWillMount() {
+  // Call this.constructor.gDSFP to support sub-classes.
+  var state = this.constructor.getDerivedStateFromProps(this.props, this.state);
+
+  if (state !== null && state !== undefined) {
+    this.setState(state);
+  }
+}
+
+function componentWillReceiveProps(nextProps) {
+  // Call this.constructor.gDSFP to support sub-classes.
+  // Use the setState() updater to ensure state isn't stale in certain edge cases.
+  function updater(prevState) {
+    var state = this.constructor.getDerivedStateFromProps(nextProps, prevState);
+    return state !== null && state !== undefined ? state : null;
+  } // Binding "this" is important for shallow renderer support.
+
+
+  this.setState(updater.bind(this));
+}
+
+function componentWillUpdate(nextProps, nextState) {
+  try {
+    var prevProps = this.props;
+    var prevState = this.state;
+    this.props = nextProps;
+    this.state = nextState;
+    this.__reactInternalSnapshotFlag = true;
+    this.__reactInternalSnapshot = this.getSnapshotBeforeUpdate(prevProps, prevState);
+  } finally {
+    this.props = prevProps;
+    this.state = prevState;
+  }
+} // React may warn about cWM/cWRP/cWU methods being deprecated.
+// Add a flag to suppress these warnings for this special case.
+
+
+componentWillMount.__suppressDeprecationWarning = true;
+componentWillReceiveProps.__suppressDeprecationWarning = true;
+componentWillUpdate.__suppressDeprecationWarning = true;
+
+function polyfill(Component) {
+  var prototype = Component.prototype;
+
+  if (!prototype || !prototype.isReactComponent) {
+    throw new Error('Can only polyfill class components');
+  }
+
+  if (typeof Component.getDerivedStateFromProps !== 'function' && typeof prototype.getSnapshotBeforeUpdate !== 'function') {
+    return Component;
+  } // If new component APIs are defined, "unsafe" lifecycles won't be called.
+  // Error if any of these lifecycles are present,
+  // Because they would work differently between older and newer (16.3+) versions of React.
+
+
+  var foundWillMountName = null;
+  var foundWillReceivePropsName = null;
+  var foundWillUpdateName = null;
+
+  if (typeof prototype.componentWillMount === 'function') {
+    foundWillMountName = 'componentWillMount';
+  } else if (typeof prototype.UNSAFE_componentWillMount === 'function') {
+    foundWillMountName = 'UNSAFE_componentWillMount';
+  }
+
+  if (typeof prototype.componentWillReceiveProps === 'function') {
+    foundWillReceivePropsName = 'componentWillReceiveProps';
+  } else if (typeof prototype.UNSAFE_componentWillReceiveProps === 'function') {
+    foundWillReceivePropsName = 'UNSAFE_componentWillReceiveProps';
+  }
+
+  if (typeof prototype.componentWillUpdate === 'function') {
+    foundWillUpdateName = 'componentWillUpdate';
+  } else if (typeof prototype.UNSAFE_componentWillUpdate === 'function') {
+    foundWillUpdateName = 'UNSAFE_componentWillUpdate';
+  }
+
+  if (foundWillMountName !== null || foundWillReceivePropsName !== null || foundWillUpdateName !== null) {
+    var componentName = Component.displayName || Component.name;
+    var newApiName = typeof Component.getDerivedStateFromProps === 'function' ? 'getDerivedStateFromProps()' : 'getSnapshotBeforeUpdate()';
+    throw Error('Unsafe legacy lifecycles will not be called for components using new component APIs.\n\n' + componentName + ' uses ' + newApiName + ' but also contains the following legacy lifecycles:' + (foundWillMountName !== null ? '\n  ' + foundWillMountName : '') + (foundWillReceivePropsName !== null ? '\n  ' + foundWillReceivePropsName : '') + (foundWillUpdateName !== null ? '\n  ' + foundWillUpdateName : '') + '\n\nThe above lifecycles should be removed. Learn more about this warning here:\n' + 'https://fb.me/react-async-component-lifecycle-hooks');
+  } // React <= 16.2 does not support static getDerivedStateFromProps.
+  // As a workaround, use cWM and cWRP to invoke the new static lifecycle.
+  // Newer versions of React will ignore these lifecycles if gDSFP exists.
+
+
+  if (typeof Component.getDerivedStateFromProps === 'function') {
+    prototype.componentWillMount = componentWillMount;
+    prototype.componentWillReceiveProps = componentWillReceiveProps;
+  } // React <= 16.2 does not support getSnapshotBeforeUpdate.
+  // As a workaround, use cWU to invoke the new lifecycle.
+  // Newer versions of React will ignore that lifecycle if gSBU exists.
+
+
+  if (typeof prototype.getSnapshotBeforeUpdate === 'function') {
+    if (typeof prototype.componentDidUpdate !== 'function') {
+      throw new Error('Cannot polyfill getSnapshotBeforeUpdate() for components that do not define componentDidUpdate() on the prototype');
+    }
+
+    prototype.componentWillUpdate = componentWillUpdate;
+    var componentDidUpdate = prototype.componentDidUpdate;
+
+    prototype.componentDidUpdate = function componentDidUpdatePolyfill(prevProps, prevState, maybeSnapshot) {
+      // 16.3+ will not execute our will-update method;
+      // It will pass a snapshot value to did-update though.
+      // Older versions will require our polyfilled will-update value.
+      // We need to handle both cases, but can't just check for the presence of "maybeSnapshot",
+      // Because for <= 15.x versions this might be a "prevContext" object.
+      // We also can't just check "__reactInternalSnapshot",
+      // Because get-snapshot might return a falsy value.
+      // So check for the explicit __reactInternalSnapshotFlag flag to determine behavior.
+      var snapshot = this.__reactInternalSnapshotFlag ? this.__reactInternalSnapshot : maybeSnapshot;
+      componentDidUpdate.call(this, prevProps, prevState, snapshot);
+    };
+  }
+
+  return Component;
+}
+},{}],"../node_modules/react-modal/lib/components/Modal.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.bodyOpenClassName = exports.portalClassName = undefined;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require("react-dom");
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _propTypes = require("prop-types");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _ModalPortal = require("./ModalPortal");
+
+var _ModalPortal2 = _interopRequireDefault(_ModalPortal);
+
+var _ariaAppHider = require("../helpers/ariaAppHider");
+
+var ariaAppHider = _interopRequireWildcard(_ariaAppHider);
+
+var _safeHTMLElement = require("../helpers/safeHTMLElement");
+
+var _safeHTMLElement2 = _interopRequireDefault(_safeHTMLElement);
+
+var _reactLifecyclesCompat = require("react-lifecycles-compat");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var portalClassName = exports.portalClassName = "ReactModalPortal";
+var bodyOpenClassName = exports.bodyOpenClassName = "ReactModal__Body--open";
+
+var isReact16 = _reactDom2.default.createPortal !== undefined;
+
+var getCreatePortal = function getCreatePortal() {
+  return isReact16 ? _reactDom2.default.createPortal : _reactDom2.default.unstable_renderSubtreeIntoContainer;
+};
+
+function getParentElement(parentSelector) {
+  return parentSelector();
+}
+
+var Modal = function (_Component) {
+  _inherits(Modal, _Component);
+
+  function Modal() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
+    _classCallCheck(this, Modal);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Modal.__proto__ || Object.getPrototypeOf(Modal)).call.apply(_ref, [this].concat(args))), _this), _this.removePortal = function () {
+      !isReact16 && _reactDom2.default.unmountComponentAtNode(_this.node);
+      var parent = getParentElement(_this.props.parentSelector);
+      if (parent) {
+        parent.removeChild(_this.node);
+      } else {
+        // eslint-disable-next-line no-console
+        console.warn('React-Modal: "parentSelector" prop did not returned any DOM ' + "element. Make sure that the parent element is unmounted to " + "avoid any memory leaks.");
+      }
+    }, _this.portalRef = function (ref) {
+      _this.portal = ref;
+    }, _this.renderPortal = function (props) {
+      var createPortal = getCreatePortal();
+      var portal = createPortal(_this, _react2.default.createElement(_ModalPortal2.default, _extends({ defaultStyles: Modal.defaultStyles }, props)), _this.node);
+      _this.portalRef(portal);
+    }, _temp), _possibleConstructorReturn(_this, _ret);
+  }
+
+  _createClass(Modal, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      if (!_safeHTMLElement.canUseDOM) return;
+
+      if (!isReact16) {
+        this.node = document.createElement("div");
+      }
+      this.node.className = this.props.portalClassName;
+
+      var parent = getParentElement(this.props.parentSelector);
+      parent.appendChild(this.node);
+
+      !isReact16 && this.renderPortal(this.props);
+    }
+  }, {
+    key: "getSnapshotBeforeUpdate",
+    value: function getSnapshotBeforeUpdate(prevProps) {
+      var prevParent = getParentElement(prevProps.parentSelector);
+      var nextParent = getParentElement(this.props.parentSelector);
+      return { prevParent: prevParent, nextParent: nextParent };
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps, _, snapshot) {
+      if (!_safeHTMLElement.canUseDOM) return;
+      var _props = this.props,
+          isOpen = _props.isOpen,
+          portalClassName = _props.portalClassName;
+
+
+      if (prevProps.portalClassName !== portalClassName) {
+        this.node.className = portalClassName;
+      }
+
+      var prevParent = snapshot.prevParent,
+          nextParent = snapshot.nextParent;
+
+      if (nextParent !== prevParent) {
+        prevParent.removeChild(this.node);
+        nextParent.appendChild(this.node);
+      }
+
+      // Stop unnecessary renders if modal is remaining closed
+      if (!prevProps.isOpen && !isOpen) return;
+
+      !isReact16 && this.renderPortal(this.props);
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      if (!_safeHTMLElement.canUseDOM || !this.node || !this.portal) return;
+
+      var state = this.portal.state;
+      var now = Date.now();
+      var closesAt = state.isOpen && this.props.closeTimeoutMS && (state.closesAt || now + this.props.closeTimeoutMS);
+
+      if (closesAt) {
+        if (!state.beforeClose) {
+          this.portal.closeWithTimeout();
+        }
+
+        setTimeout(this.removePortal, closesAt - now);
+      } else {
+        this.removePortal();
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      if (!_safeHTMLElement.canUseDOM || !isReact16) {
+        return null;
+      }
+
+      if (!this.node && isReact16) {
+        this.node = document.createElement("div");
+      }
+
+      var createPortal = getCreatePortal();
+      return createPortal(_react2.default.createElement(_ModalPortal2.default, _extends({
+        ref: this.portalRef,
+        defaultStyles: Modal.defaultStyles
+      }, this.props)), this.node);
+    }
+  }], [{
+    key: "setAppElement",
+    value: function setAppElement(element) {
+      ariaAppHider.setElement(element);
+    }
+
+    /* eslint-disable react/no-unused-prop-types */
+
+    /* eslint-enable react/no-unused-prop-types */
+
+  }]);
+
+  return Modal;
+}(_react.Component);
+
+Modal.propTypes = {
+  isOpen: _propTypes2.default.bool.isRequired,
+  style: _propTypes2.default.shape({
+    content: _propTypes2.default.object,
+    overlay: _propTypes2.default.object
+  }),
+  portalClassName: _propTypes2.default.string,
+  bodyOpenClassName: _propTypes2.default.string,
+  htmlOpenClassName: _propTypes2.default.string,
+  className: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.shape({
+    base: _propTypes2.default.string.isRequired,
+    afterOpen: _propTypes2.default.string.isRequired,
+    beforeClose: _propTypes2.default.string.isRequired
+  })]),
+  overlayClassName: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.shape({
+    base: _propTypes2.default.string.isRequired,
+    afterOpen: _propTypes2.default.string.isRequired,
+    beforeClose: _propTypes2.default.string.isRequired
+  })]),
+  appElement: _propTypes2.default.instanceOf(_safeHTMLElement2.default),
+  onAfterOpen: _propTypes2.default.func,
+  onRequestClose: _propTypes2.default.func,
+  closeTimeoutMS: _propTypes2.default.number,
+  ariaHideApp: _propTypes2.default.bool,
+  shouldFocusAfterRender: _propTypes2.default.bool,
+  shouldCloseOnOverlayClick: _propTypes2.default.bool,
+  shouldReturnFocusAfterClose: _propTypes2.default.bool,
+  parentSelector: _propTypes2.default.func,
+  aria: _propTypes2.default.object,
+  data: _propTypes2.default.object,
+  role: _propTypes2.default.string,
+  contentLabel: _propTypes2.default.string,
+  shouldCloseOnEsc: _propTypes2.default.bool,
+  overlayRef: _propTypes2.default.func,
+  contentRef: _propTypes2.default.func
+};
+Modal.defaultProps = {
+  isOpen: false,
+  portalClassName: portalClassName,
+  bodyOpenClassName: bodyOpenClassName,
+  role: "dialog",
+  ariaHideApp: true,
+  closeTimeoutMS: 0,
+  shouldFocusAfterRender: true,
+  shouldCloseOnEsc: true,
+  shouldCloseOnOverlayClick: true,
+  shouldReturnFocusAfterClose: true,
+  parentSelector: function parentSelector() {
+    return document.body;
+  }
+};
+Modal.defaultStyles = {
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(255, 255, 255, 0.75)"
+  },
+  content: {
+    position: "absolute",
+    top: "40px",
+    left: "40px",
+    right: "40px",
+    bottom: "40px",
+    border: "1px solid #ccc",
+    background: "#fff",
+    overflow: "auto",
+    WebkitOverflowScrolling: "touch",
+    borderRadius: "4px",
+    outline: "none",
+    padding: "20px"
+  }
+};
+
+
+(0, _reactLifecyclesCompat.polyfill)(Modal);
+
+exports.default = Modal;
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","prop-types":"../node_modules/prop-types/index.js","./ModalPortal":"../node_modules/react-modal/lib/components/ModalPortal.js","../helpers/ariaAppHider":"../node_modules/react-modal/lib/helpers/ariaAppHider.js","../helpers/safeHTMLElement":"../node_modules/react-modal/lib/helpers/safeHTMLElement.js","react-lifecycles-compat":"../node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js"}],"../node_modules/react-modal/lib/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Modal = require("./components/Modal");
+
+var _Modal2 = _interopRequireDefault(_Modal);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _Modal2.default;
+module.exports = exports["default"];
+},{"./components/Modal":"../node_modules/react-modal/lib/components/Modal.js"}],"components/link-group/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -110782,6 +112408,8 @@ var _contextNonPersisted = require("../../contextNonPersisted");
 var _utilities = require("../../shared/utilities");
 
 var _useStickyState3 = require("../../hooks/useStickyState");
+
+var _reactModal = _interopRequireDefault(require("react-modal"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -110831,15 +112459,14 @@ var LinkGroup = function LinkGroup(_ref) {
       setGroupVisibility = _useState4[1];
 
   var _useContext = (0, _react.useContext)(_contextPersisted.AppContextPersisted),
-      appStatePersisted = _useContext.appStatePersisted,
-      setAppStatePersisted = _useContext.setAppStatePersisted;
+      appStatePersisted = _useContext.appStatePersisted;
 
   var _useContext2 = (0, _react.useContext)(_contextNonPersisted.AppContextNonPersisted),
-      appStateNonPersisted = _useContext2.appStateNonPersisted,
-      setAppStateNonPersisted = _useContext2.setAppStateNonPersisted;
+      appStateNonPersisted = _useContext2.appStateNonPersisted;
 
   var isAuthOwner = (0, _utilities.currentUserIsOwner)(appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkPage.uid);
   var groupVisibilityClass = groupVisibility ? '' : 'grid--collapsed';
+  var linkCardSizeClass = ' grid--item-size-' + appStatePersisted.linkCardSize;
   (0, _react.useEffect)(function () {
     var unsub = _firebase.db.collection('linkpages').doc(linkPage.id).collection(subCollectionId).onSnapshot(function (snapshot) {
       var subCollection = snapshot.docs.map(function (doc) {
@@ -110860,6 +112487,46 @@ var LinkGroup = function LinkGroup(_ref) {
     (0, _utilities.deleteLink)(groupData, href);
   };
 
+  var _React$useState = _react.default.useState(false),
+      _React$useState2 = _slicedToArray(_React$useState, 2),
+      modalIsOpen = _React$useState2[0],
+      setIsOpen = _React$useState2[1];
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function afterOpenModal() {}
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  var ModalComponent = function ModalComponent() {
+    return /*#__PURE__*/_react.default.createElement(_reactModal.default, {
+      isOpen: modalIsOpen,
+      onAfterOpen: afterOpenModal,
+      onRequestClose: closeModal,
+      contentLabel: "Delete Group Modal",
+      className: "modal-react",
+      overlayClassName: "modal-react__background"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: "modal-react__inner"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: "modal-react__title"
+    }, "Are you sure you want to delete this group?"), /*#__PURE__*/_react.default.createElement("button", {
+      className: "button button--default button--cancel",
+      onClick: closeModal,
+      role: "button"
+    }, "Cancel"), /*#__PURE__*/_react.default.createElement("button", {
+      className: "button button--default button--confirm",
+      onClick: function onClick() {
+        return deleteLinkGroup(linkPage, groupData.parentLinkGroupId, groupData.id);
+      },
+      role: "button"
+    }, "Yes, delete it")));
+  };
+
   return /*#__PURE__*/_react.default.createElement(_react.Fragment, null, /*#__PURE__*/_react.default.createElement(_reactBeautifulDnd.Draggable, {
     draggableId: subCollectionId,
     index: index
@@ -110872,7 +112539,7 @@ var LinkGroup = function LinkGroup(_ref) {
     }, provided.dragHandleProps)), isAuthOwner && /*#__PURE__*/_react.default.createElement("div", {
       className: "grid__delete-group",
       onClick: function onClick() {
-        return deleteLinkGroup(linkPage, groupData.parentLinkGroupId, groupData.id);
+        return openModal();
       }
     }), groupData && /*#__PURE__*/_react.default.createElement(_index.default, {
       className: "grid__title",
@@ -110881,11 +112548,11 @@ var LinkGroup = function LinkGroup(_ref) {
       linkGroup: groupData,
       editableTextContext: "linkGroupTitle"
     }), /*#__PURE__*/_react.default.createElement("div", {
-      className: 'grid ' + groupVisibilityClass
+      className: 'grid ' + groupVisibilityClass + linkCardSizeClass
     }, /*#__PURE__*/_react.default.createElement(_react.Fragment, null, !!Object.keys(groupData).length && !!groupData.links.length ? groupData.links.map(function (link) {
       return /*#__PURE__*/_react.default.createElement("div", {
         className: "grid__item",
-        key: 'grid__item-' + link.title
+        key: 'grid__item-' + (0, _utilities.generateUniqueId)(6)
       }, /*#__PURE__*/_react.default.createElement(_index2.default, {
         href: link.href,
         title: link.title,
@@ -110925,13 +112592,13 @@ var LinkGroup = function LinkGroup(_ref) {
     }, /*#__PURE__*/_react.default.createElement("path", {
       fill: "#999999",
       d: "M1 20 L16 6 L31 20 L27 24 L16 14 L5 24 z"
-    }))));
+    }))), /*#__PURE__*/_react.default.createElement(ModalComponent, null));
   }));
 };
 
 var _default = LinkGroup;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","react-beautiful-dnd":"../node_modules/react-beautiful-dnd/dist/react-beautiful-dnd.esm.js","../../firebase":"firebase.js","../editable-text/index":"components/editable-text/index.js","../link/index":"components/link/index.js","../modal-create-link/index":"components/modal-create-link/index.js","../../contextPersisted":"contextPersisted.js","../../contextNonPersisted":"contextNonPersisted.js","../../shared/utilities":"shared/utilities.js","../../hooks/useStickyState":"hooks/useStickyState.js"}],"containers/link-page/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-beautiful-dnd":"../node_modules/react-beautiful-dnd/dist/react-beautiful-dnd.esm.js","../../firebase":"firebase.js","../editable-text/index":"components/editable-text/index.js","../link/index":"components/link/index.js","../modal-create-link/index":"components/modal-create-link/index.js","../../contextPersisted":"contextPersisted.js","../../contextNonPersisted":"contextNonPersisted.js","../../shared/utilities":"shared/utilities.js","../../hooks/useStickyState":"hooks/useStickyState.js","react-modal":"../node_modules/react-modal/lib/index.js"}],"containers/link-page/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -110985,8 +112652,6 @@ var LinkPage = function LinkPage(_ref) {
       _useStickyState4 = _slicedToArray(_useStickyState3, 2),
       linkPageSubCollections = _useStickyState4[0],
       setLinkPageSubCollections = _useStickyState4[1];
-
-  console.log(linkPageSubCollections);
 
   var _useContext = (0, _react.useContext)(_contextNonPersisted.AppContextNonPersisted),
       appStateNonPersisted = _useContext.appStateNonPersisted,
@@ -111215,15 +112880,24 @@ var Settings = function Settings() {
       setAppStateNonPersisted = _useContext2.setAppStateNonPersisted;
 
   var theme = appStatePersisted.theme,
-      linkTargetBlank = appStatePersisted.linkTargetBlank;
+      linkTargetBlank = appStatePersisted.linkTargetBlank,
+      linkCardSize = appStatePersisted.linkCardSize;
 
   var themeState = function themeState() {
     var themeNew = theme === 'dark' ? 'light' : 'dark';
-    var appStateVar = {
+    return {
       theme: themeNew,
-      linkTargetBlank: true
+      linkTargetBlank: linkTargetBlank,
+      linkCardSize: linkCardSize
     };
-    return appStateVar;
+  };
+
+  var linkCardState = function linkCardState(linkCardSizeTemp) {
+    return {
+      theme: theme,
+      linkTargetBlank: linkTargetBlank,
+      linkCardSize: linkCardSizeTemp
+    };
   };
 
   return /*#__PURE__*/_react.default.createElement(_react.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
@@ -111259,7 +112933,51 @@ var Settings = function Settings() {
   }), /*#__PURE__*/_react.default.createElement("label", {
     className: "toggle__label",
     htmlFor: "toggle--target"
-  })), /*#__PURE__*/_react.default.createElement("hr", null), /*#__PURE__*/_react.default.createElement("a", {
+  })), /*#__PURE__*/_react.default.createElement("hr", null), /*#__PURE__*/_react.default.createElement("span", null, "Link size"), /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement("div", {
+    className: "l-flex l-flex--col l-flex--space-between u-m-top-10"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "radio radio--link-size"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    className: "radio__input",
+    type: "radio",
+    name: "radio--link-size",
+    id: "radio--link-size-small",
+    defaultChecked: linkCardSize === 'small' ? true : false,
+    onClick: function onClick() {
+      return setAppStatePersisted(linkCardState('small'));
+    }
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    className: "radio__label",
+    htmlFor: "radio--link-size-small"
+  }, "Small")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "radio radio--link-size radio--link-size-medium"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    className: "radio__input",
+    type: "radio",
+    name: "radio--link-size",
+    id: "radio--link-size-medium",
+    defaultChecked: linkCardSize === 'medium' ? true : false,
+    onClick: function onClick() {
+      return setAppStatePersisted(linkCardState('medium'));
+    }
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    className: "radio__label",
+    htmlFor: "radio--link-size-medium"
+  }, "Medium")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "radio radio--link-size radio--link-size-large"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    className: "radio__input",
+    type: "radio",
+    name: "radio--link-size",
+    id: "radio--link-size-large",
+    defaultChecked: linkCardSize === 'large' ? true : false,
+    onClick: function onClick() {
+      return setAppStatePersisted(linkCardState('large'));
+    }
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    className: "radio__label",
+    htmlFor: "radio--link-size-large"
+  }, "Large"))), /*#__PURE__*/_react.default.createElement("hr", null), /*#__PURE__*/_react.default.createElement("a", {
     href: "/"
   }, "Create new quicklinks page")));
 };
@@ -113433,28 +115151,22 @@ var Layout = function Layout() {
     className: "logo"
   }, /*#__PURE__*/_react.default.createElement("svg", {
     xmlns: "http://www.w3.org/2000/svg",
-    viewBox: "0 0 30.313 30.313",
-    width: "30.313pt",
-    height: "30.313pt"
-  }, /*#__PURE__*/_react.default.createElement("defs", null, /*#__PURE__*/_react.default.createElement("clipPath", {
-    id: "_clipPath_21kOAZvBZvzmfuPMV5YjWswrRrxACzNy"
-  }, /*#__PURE__*/_react.default.createElement("rect", {
-    x: "0",
-    y: "0",
-    width: "30.313",
-    height: "30.313"
-  }))), /*#__PURE__*/_react.default.createElement("g", {
-    clipPath: "url(#_clipPath_21kOAZvBZvzmfuPMV5YjWswrRrxACzNy)"
-  }, /*#__PURE__*/_react.default.createElement("rect", {
-    x: "0",
-    y: "0",
-    width: "30.313",
-    height: "30.313",
-    transform: "matrix(1,0,0,1,0,0)",
-    fill: "rgba(255,255,255,0)"
+    viewBox: "0 0 59 68",
+    width: "59",
+    height: "68"
+  }, /*#__PURE__*/_react.default.createElement("g", {
+    id: "logo-black"
+  }, /*#__PURE__*/_react.default.createElement("path", {
+    id: "o ",
+    fillRule: "evenodd",
+    className: "shp1",
+    fill: "#000000",
+    d: "M10.35 34.28C10.35 31.06 10.96 27.99 12.16 25.09C13.45 22.19 15.14 19.7 17.24 17.6C19.41 15.43 21.91 13.73 24.73 12.53C27.63 11.24 30.73 10.59 34.04 10.59C37.34 10.59 40.44 11.24 43.34 12.53C46.24 13.73 48.78 15.43 50.96 17.6C53.13 19.7 54.83 22.19 56.03 25.09C57.32 27.99 57.97 31.06 57.97 34.28C57.97 37.58 57.32 40.68 56.03 43.59C54.83 46.41 53.13 48.86 50.96 50.96C48.78 53.05 46.24 54.74 43.34 56.03C40.44 57.24 37.34 57.85 34.04 57.85C30.73 57.85 27.63 57.24 24.73 56.03C21.91 54.74 19.41 53.05 17.24 50.96C15.14 48.86 13.45 46.41 12.16 43.59C10.96 40.68 10.35 37.58 10.35 34.28ZM15.31 34.28C15.31 36.86 15.79 39.27 16.76 41.53C17.72 43.79 19.05 45.76 20.74 47.45C22.44 49.14 24.41 50.47 26.67 51.44C28.92 52.41 31.34 52.89 33.92 52.89C36.5 52.89 38.91 52.41 41.17 51.44C43.51 50.47 45.52 49.14 47.21 47.45C48.9 45.76 50.23 43.79 51.2 41.53C52.17 39.27 52.65 36.86 52.65 34.28C52.65 31.7 52.17 29.28 51.2 27.03C50.23 24.77 48.9 22.8 47.21 21.11C45.52 19.41 43.51 18.08 41.17 17.12C38.91 16.07 36.5 15.55 33.92 15.55C31.34 15.55 28.92 16.07 26.67 17.12C24.41 18.08 22.44 19.41 20.74 21.11C19.05 22.8 17.72 24.77 16.76 27.03C15.79 29.28 15.31 31.7 15.31 34.28Z"
   }), /*#__PURE__*/_react.default.createElement("path", {
-    d: " M 17.985 27.041 L 12.946 27.041 L 12.946 25.852 L 14.419 25.852 L 14.419 20.362 L 14.419 20.362 Q 13.088 21.194 11.329 21.194 L 11.329 21.194 L 11.329 21.194 Q 9.594 21.194 8.121 20.219 L 8.121 20.219 L 8.121 20.219 Q 7.289 19.672 6.778 18.496 L 6.778 18.496 L 6.778 18.496 Q 6.267 17.319 6.267 15.632 L 6.267 15.632 L 6.267 15.632 Q 6.267 12.518 7.859 10.878 L 7.859 10.878 L 7.859 10.878 Q 9.547 9.119 11.71 9.119 L 11.71 9.119 L 11.71 9.119 Q 13.041 9.119 14.419 9.808 L 14.419 9.808 L 14.419 9.333 L 15.964 9.214 L 15.964 25.852 L 17.985 25.852 L 17.985 27.041 Z  M 11.662 19.815 L 11.662 19.815 L 11.662 19.815 Q 13.088 19.815 14.419 19.173 L 14.419 19.173 L 14.419 10.83 L 14.419 10.83 Q 13.326 10.497 12.351 10.497 L 12.351 10.497 L 12.351 10.497 Q 10.307 10.497 9.059 11.84 L 9.059 11.84 L 9.059 11.84 Q 7.812 13.183 7.812 15.608 L 7.812 15.608 L 7.812 15.608 Q 7.812 16.891 8.18 17.783 L 8.18 17.783 L 8.18 17.783 Q 8.548 18.674 9.166 19.102 L 9.166 19.102 L 9.166 19.102 Q 10.236 19.815 11.662 19.815 Z  M 20.718 4.46 L 19.126 4.46 L 19.126 3.272 L 22.263 3.272 L 22.263 19.91 L 24.046 19.91 L 24.046 21.099 L 19.245 21.099 L 19.245 19.91 L 20.718 19.91 L 20.718 4.46 Z",
-    fill: "#f1f1f1"
+    id: "c ",
+    className: "shp1",
+    fill: "#000000",
+    d: "M6.5 34.34C6.5 17.78 19.55 6.66 33.69 6.66C42.03 6.66 49.04 10.04 53.88 15.24L58.23 10.89C52.31 4.73 43.85 0.62 33.57 0.62C16.41 0.62 0.46 14.15 0.46 34.46C0.46 51.62 14 67.57 34.3 67.57C43.24 67.57 52.06 63.82 58.23 57.3L53.88 53.07C48.8 58.39 41.67 61.53 34.18 61.53C17.62 61.53 6.5 48.48 6.5 34.34Z"
   }))))), /*#__PURE__*/_react.default.createElement("button", {
     className: "button button--settings header__end",
     onClick: function onClick() {
@@ -113491,6 +115203,8 @@ var _contextPersisted = require("./contextPersisted");
 
 var _contextNonPersisted = require("./contextNonPersisted");
 
+var _reactModal = _interopRequireDefault(require("react-modal"));
+
 require("./styles.css");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -113509,14 +115223,16 @@ if ('serviceWorker' in navigator) {
 // }
 
 
+var rootElement = document.getElementById("root");
+
+_reactModal.default.setAppElement(rootElement);
+
 var App = function App() {
   return /*#__PURE__*/_react.default.createElement(_contextNonPersisted.AppContextNonPersistedProvider, null, /*#__PURE__*/_react.default.createElement(_contextPersisted.AppContextPersistedProvider, null, /*#__PURE__*/_react.default.createElement(_index.default, null)));
 };
 
-var rootElement = document.getElementById("root");
-
 _reactDom.default.render( /*#__PURE__*/_react.default.createElement(App, null), rootElement);
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./containers/layout/index":"containers/layout/index.js","./contextPersisted":"contextPersisted.js","./contextNonPersisted":"contextNonPersisted.js","./styles.css":"styles.css","./service-worker.js":[["service-worker.js","service-worker.js"],"service-worker.js.map","service-worker.js"]}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./containers/layout/index":"containers/layout/index.js","./contextPersisted":"contextPersisted.js","./contextNonPersisted":"contextNonPersisted.js","react-modal":"../node_modules/react-modal/lib/index.js","./styles.css":"styles.css","./service-worker.js":[["service-worker.js","service-worker.js"],"service-worker.js.map","service-worker.js"]}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -113544,7 +115260,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64561" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59488" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

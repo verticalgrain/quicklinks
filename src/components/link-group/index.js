@@ -7,8 +7,10 @@ import Link from '../link/index'
 import ModalCreateLink from '../modal-create-link/index'
 import { AppContextPersisted } from '../../contextPersisted'
 import { AppContextNonPersisted } from '../../contextNonPersisted'
-import { currentUserIsOwner, deleteLink } from '../../shared/utilities'
+import { currentUserIsOwner, deleteLink, generateUniqueId } from '../../shared/utilities'
 import { useStickyState } from '../../hooks/useStickyState'
+
+import Modal from 'react-modal'
 
 const LinkGroup = ( { linkPage, subCollectionId, index, deleteLinkGroup } ) => {
 
@@ -18,13 +20,15 @@ const LinkGroup = ( { linkPage, subCollectionId, index, deleteLinkGroup } ) => {
 
     const [ groupVisibility, setGroupVisibility ] = useState( true )
 
-    const { appStatePersisted, setAppStatePersisted } = useContext( AppContextPersisted )
+    const { appStatePersisted } = useContext( AppContextPersisted )
 
-    const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
+    const { appStateNonPersisted } = useContext( AppContextNonPersisted )
 
     const isAuthOwner = currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkPage.uid );
 
     const groupVisibilityClass = groupVisibility ? '' : 'grid--collapsed';
+
+    const linkCardSizeClass = ' grid--item-size-' + appStatePersisted.linkCardSize;
 
     useEffect( () => {
         const unsub = db.collection( 'linkpages' ).doc( linkPage.id ).collection( subCollectionId ).onSnapshot( snapshot => {
@@ -44,6 +48,38 @@ const LinkGroup = ( { linkPage, subCollectionId, index, deleteLinkGroup } ) => {
         deleteLink( groupData, href );
     }
 
+    const [ modalIsOpen, setIsOpen ] = React.useState( false );
+
+    function openModal() {
+        setIsOpen(true);
+    }
+
+    function afterOpenModal() {
+    }
+
+    function closeModal(){
+        setIsOpen(false);
+    }
+
+    const ModalComponent = () => {
+        return (
+            <Modal
+                isOpen={modalIsOpen}
+                onAfterOpen={afterOpenModal}
+                onRequestClose={closeModal}
+                contentLabel="Delete Group Modal"
+                className="modal-react"
+                overlayClassName="modal-react__background"
+            >
+                <div className="modal-react__inner">
+                    <div className="modal-react__title">Are you sure you want to delete this group?</div>
+                    <button className="button button--default button--cancel" onClick={ closeModal } role="button">Cancel</button>
+                    <button className="button button--default button--confirm" onClick={ () => deleteLinkGroup( linkPage, groupData.parentLinkGroupId, groupData.id ) } role="button">Yes, delete it</button>
+                </div>
+            </Modal>
+        )
+    }
+
     return (
         <Fragment>
             <Draggable draggableId={ subCollectionId } index={ index }>
@@ -54,13 +90,13 @@ const LinkGroup = ( { linkPage, subCollectionId, index, deleteLinkGroup } ) => {
                         { ...provided.draggableProps }
                     >
                         { isAuthOwner && <div className="grid__handle" { ...provided.dragHandleProps }></div> }
-                        { isAuthOwner && <div className="grid__delete-group" onClick={ () => deleteLinkGroup( linkPage, groupData.parentLinkGroupId, groupData.id ) }></div> }
+                        { isAuthOwner && <div className="grid__delete-group" onClick={ () => openModal() }></div> }
                         { groupData && <EditableText className="grid__title" text={ groupData.title } linkPage={ linkPage } linkGroup={ groupData } editableTextContext='linkGroupTitle' /> }
-                        <div className={ 'grid ' + groupVisibilityClass }>
+                        <div className={ 'grid ' + groupVisibilityClass + linkCardSizeClass }>
                             <Fragment>
                                 { !!Object.keys( groupData ).length && !!groupData.links.length ? groupData.links.map( link => {
                                     return (
-                                    <div className="grid__item" key={ 'grid__item-' + link.title }>
+                                    <div className="grid__item" key={ 'grid__item-' + generateUniqueId( 6 ) }>
                                         <Link href={ link.href } title={ link.title } authenticated={ isAuthOwner } linkTargetBlank={ appStatePersisted.linkTargetBlank } deleteLink={ deleteLinkLocal } />
                                     </div>
                                 ) } )
@@ -79,6 +115,7 @@ const LinkGroup = ( { linkPage, subCollectionId, index, deleteLinkGroup } ) => {
                         <div className="grid__collapse-expand" onClick={ () => setGroupVisibility( ! groupVisibility ) }>
                             <svg height="32" id="chevron-up" viewBox="0 0 32 32" width="32" xmlns="http://www.w3.org/2000/svg"><path fill="#999999" d="M1 20 L16 6 L31 20 L27 24 L16 14 L5 24 z"/></svg>
                         </div>
+                        <ModalComponent />
                     </div>
                 ) }
             </Draggable>

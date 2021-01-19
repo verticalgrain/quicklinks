@@ -13,7 +13,7 @@ const LinkPage = ( { match } ) => {
     const [ linkPage, setLinkPage ] = useStickyState( [], 'lp-' + match.params.groupslug )
 
     const [ linkPageSubCollections, setLinkPageSubCollections ] = useStickyState( [], 'lp-sc-' + match.params.groupslug )
-    console.log( linkPageSubCollections );
+
     const { appStateNonPersisted, setAppStateNonPersisted } = useContext( AppContextNonPersisted )
 
     const [ _count, forceUpdate ] = useReducer(x => x + 1, 0);

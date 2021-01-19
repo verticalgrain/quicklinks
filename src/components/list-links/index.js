@@ -52,7 +52,7 @@ const ListLinks = ( { linkGroupId, linkGroupUid, subCollectionId } ) => {
                         { currentUserIsOwner( appStateNonPersisted.authenticated, appStateNonPersisted.uid, linkGroupUid ) && <div className="card__delete" onClick={ () => deleteLink( link.id ) }></div> }
                         <a className="card__link" href={ link.href } title={ link.title } target={ appStatePersisted.linkTargetBlank ? "_blank" : "_self" } rel={ appStatePersisted.linkTargetBlank ? "noopener noreferrer" : "" }>
                             <div className="card__inner">
-                                <div className="card__favicon"><img src={ 'https://s2.googleusercontent.com/s2/favicons?domain=' + link.href } width="16" height="16" /></div>
+                                <div className="card__favicon"><img src={ 'https://www.google.com/s2/favicons?sz=32&domain_url=' + link.href } width="16" height="16" /></div>
                                 <div className="card__title">{ link.title }</div>
                                 <div className="card__url">{ link.href }</div>
                             </div>

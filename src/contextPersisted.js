@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 export const AppContextPersisted = React.createContext( {
     theme: 'dark',
     linkTargetBlank: true,
+    linkCardSize: 'medium',
 } );
 
 export const AppContextPersistedProvider = ( { children } ) => {
@@ -11,6 +12,7 @@ export const AppContextPersistedProvider = ( { children } ) => {
         JSON.parse( localStorage.getItem( 'appLocalstoragePersisted' ) ) || {
             theme: 'dark',
             linkTargetBlank: true,
+            linkCardSize: 'medium',
         }
     );
 
